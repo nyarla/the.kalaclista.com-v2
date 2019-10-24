@@ -22,7 +22,7 @@
   {{- if $Page.IsPage -}}
     {{- $data = merge $data (dict "title" $Page.Title) -}}
     {{- $data = merge $data (dict "description" $content.summary) -}}
-    {{- $data = merge $data (dict "permalink" (replaceRE "/(\\d{6})/$" "/#$1" $Page.Permalink) -}}
+    {{- $data = merge $data (dict "permalink" (replaceRE "/(\\d{6})/$" "/#$1" $Page.Permalink)) -}}
   {{- else if not $Page.IsHome -}}
     {{- if (ne $Page.Section "tags") -}}
       {{- $data = merge $data (dict "title" (printf "%sのブックマーク" $data.date)) -}}
