@@ -1,0 +1,44 @@
+:root {
+  --Color-Gray-Brightest: #FFFFFF ;
+  --Color-Gray-Brighter:  #F9F9F9 ;
+  --Color-Gray-Bright:    #CCCCCC ;
+  --Color-Gray-Dark:      #666666 ;
+  --Color-Gray-Darker:    #333333 ;
+  --Color-Gray-Darkest:   #000000 ;
+  
+  --Color-Red-Bright:     #FF0000 ;
+  --Color-Red-Dark:       #CC0000 ;
+
+  --Color-Orange-Bright:  #FF6633 ;
+  --Color-Orange-Dark:    #CC6600 ;
+  
+  --Color-Yellow-Bright:  #FFCC33 ;
+  --Color-Yellow-Dark:    #CC9900 ;
+
+  --Color-Lime-Bright:    #CCFF00 ;
+  --Color-Lime-Dark:      #99CC00 ;
+
+  --Color-Green-Bright:   #00CC00 ;
+  --Color-Green-Dark:     #009900 ;
+
+  --Color-Mint-Bright:    #00CC99 ;
+  --Color-Mint-Dark:      #009966 ;
+
+  --Color-Cyan-Bright:    #00CCCC ;
+  --Color-Cyan-Dark:      #009999 ;
+
+  --Color-Sky-Bright:     #00CCFF ;
+  --Color-Sky-Dark:       #0099CC ;
+
+  --Color-Blue-Bright:    #0000FF ;
+  --Color-Blue-Dark:      #0000CC ;
+
+  --Color-Purple-Bright:  #9900CC ;
+  --Color-Purple-Dark:    #660099 ;
+
+  --Color-Magenta-Bright: #CC00CC ;
+  --Color-Magenta-Dark:   #990099 ;
+
+  --Color-Wine-Bright:    #CC3366 ;
+  --Color-Wine-Dark:      #990033 ;
+}

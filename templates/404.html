@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="ja">
+  <head prefix="og: http://ogp.me/ns# website: http://ogp.me/ns/website#">
+    {{ partial "metadata.html.html" . }} 
+  </head>
+  <body id="notfound">
+    {{ partial "blocks.html.html" . }}
+    {{ partial "header.html.html" (slice . 1) }}
+    <main id="{{ .Site.Params.website }}">
+    {{ block "home" (slice .Site .Page .Data true) }}{{ end }}
+    </main>
+    {{ partial "footer.html.html" (slice . 1) }} 
+  </body>
+</html>

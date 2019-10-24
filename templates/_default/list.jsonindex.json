@@ -1,0 +1,41 @@
+{{ $items := dict }}
+{{ $sitemaps := slice }}
+
+{{ $date := "" }}
+{{ $entries := slice }}
+
+{{ range $page := .Site.Pages }}
+{{ $meta := partial "meta.html.html" (slice $.Site $page $page.Data) | unmarshal }}
+
+{{ $sitemaps = append (slice (dict "permalink" $meta.permalink "date" $page.Date)) $sitemaps }}
+{{ $item := dict "title" $meta.title "permalink" $meta.permalink "date" $page.Date}}
+
+{{ if $page.IsPage }}
+
+{{ if eq (len $entries) 0 }}
+
+{{ $date = $page.Date.Format "2006-01" }}
+{{ $entries = append (slice $item) $entries }}
+
+{{ else }}
+
+{{ if (eq $date ($page.Date.Format "2006-01")) }}
+{{ $entries = append (slice $item) $entries }}
+{{ else }}
+{{ $items = merge $items (dict $date $entries) }}
+{{ $date = $page.Date.Format "2006-01" }}
+{{ $entries = slice }}
+{{ $entries = append (slice $item) $entries }}
+{{ end }}
+
+{{ end }}
+
+{{ end }}
+
+{{ end }}
+
+{{ if ne (len $entries) 0 }}
+{{ $items = merge $items (dict $date $entries) }}
+{{ end }}
+
+{{ (dict "items" $items "sitemaps" $sitemaps) | jsonify }}

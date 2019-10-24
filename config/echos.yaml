@@ -1,0 +1,29 @@
+  website: echos 
+  title: "エコーズ"
+  description: "『輝かしい青春』なんて失かった方の<br>『にゃるら』のぼやき。<br>あるいはチラシの裏。"
+
+# Title
+title: "カラクリスタ・エコーズ"
+
+# Permalink
+baseURL: "https://the.kalaclista.com/echos"
+disableKinds:
+  - taxonomyTerm
+  - sitemap
+  - robotosTXT
+  - "404" 
+
+permalinks:
+  echos: /:year/:month/:day/:slug
+
+outputs:
+  home:
+    - HTML
+    - Atom
+    - RSS
+    - JSONFeed
+    - JSONIndex
+  section:
+    - HTML
+  page:
+    - HTML

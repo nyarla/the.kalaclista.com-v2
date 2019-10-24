@@ -1,0 +1,26 @@
+{{ $args := unmarshal .Inner }}
+
+{{ $title := $args.title }}
+{{ $asin := $args.asin }}
+
+{{ $amazonURL := printf "https://www.amazon.co.jp/dp/%s/" $asin }}
+{{ $imageURL := printf "https://images-na.ssl-images-amazon.com/images/P/%s.09.LZZZZZZZ.jpg" $asin }}
+
+{{ $enabled := (and (eq (getenv "NODE_ENV") "production") (eq (getenv "AMAZON") "1")) }}
+
+<figure class="shopcard">
+  {{ if (and (default true $args.thumbnail) (eq (getenv "AMAZON") "1")) }}
+  <a href="{{ $amazonURL }}{{ if $enabled }}?tag=nyarla-22{{ end }}">
+    <img src="{{ $imageURL }}" height="128">
+  </a>
+  {{ end }}
+  <nav>
+    <h1><a href="{{ $amazonURL }}{{ if $enabled }}?tag=nyarla-22{{ end }}">{{ $title}}</a></h1>
+    <ul>
+      <li><a href="{{ $amazonURL }}{{ if $enabled }}?tag=nyarla-22{{ end }}">Amazon.co.jp で買う</a></li>
+      {{ if $args.rakuten }}
+      <li><a href="{{ $args.rakuten }}">楽天経由で買う</a></li>
+      {{ end }}
+    </ul>
+  </nav>
+</figure>

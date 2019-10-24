@@ -1,0 +1,18 @@
+{{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" | safeHTML }}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
+  {{ range $item := sort (index $.Site.Data.index $section).sitemaps "permalink" "asc" }}
+  <url>
+    <loc>{{ $item.permalink }}</loc>
+    <lastmod>{{ $item.date }}</lastmod>
+  </url>
+  {{ end }}
+  {{ end }}
+
+  {{ range $page := .Data.Pages }}
+  <url>
+    <loc>{{ $page.Permalink }}</loc>
+    <lastmod>{{ $page.Date.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
+  </url>
+  {{ end }}
+</urlset>

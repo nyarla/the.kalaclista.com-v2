@@ -1,0 +1,37 @@
+{{ $meta:= unmarshal (partial "meta.html.html" (slice .Site .Page .Data)) }}
+
+<title>{{ .Site.Title }}{{ if ne $meta.title .Site.Title }} - {{ $meta.title }}{{ end }}</title>
+{{ if .Page.IsPage }}
+<meta name="description" content="{{ $meta.summary }}">
+{{ else }}
+<meta name="description" content="{{ $meta.description }}">
+{{ end }}
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@kalaclista">
+<meta name="twitter:creator" content="@kalaclista">
+
+<meta property="og:profile:first_name" content="Naoki">
+<meta property="og:profile:last_name" content="OKAMURA">
+
+<meta property="og:image" content="{{ absURL "assets/apple-touch-icon.png" }}">
+<meta property="og:url" content="{{ .Page.Permalink }}">
+
+<meta property="og:site_title" content="{{ .Site.Title }}">
+{{ if ne $meta.title .Site.Title }}
+<meta property="og:title" content="{{ $meta.title }}">
+{{ end }}
+
+{{ if (and .Page.IsPage (ne .Page.File.BaseFileName "search") (ne .Page.File.BaseFileName "archives") (ne .Page.Kind "404")) }}
+<meta property="og:type" content="article">
+{{ else }}
+<meta property="og:type" content="website">
+{{ end }}
+
+{{ if (ne .Site.Params.website "home") }}
+<meta property="og:section" content="{{ .Site.Params.website }}">
+{{ end }}
+
+{{ range $tag := default (slice) .Page.Params.tags }}
+<meta property="og:tag" content="{{ $tag }}">
+{{ end }}

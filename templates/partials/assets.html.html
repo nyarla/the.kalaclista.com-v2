@@ -1,0 +1,11 @@
+{{ $main := resources.Get "scss/main.scss" | resources.ToCSS (dict "targetPath" "assets/main.css") }}
+{{ $colors := resources.Get "css/colors.css" | resources.ToCSS (dict "targetPath" "assets/colors.css") }}
+{{ $highlight := resources.Get "css/highlight.css" | resources.ToCSS (dict "targetPath" "assets/highlight.css") }}
+{{ $normalize := resources.Get "css/normalize.css" | resources.ToCSS (dict "targetPath" "assets/normalize.css") }}
+
+<style>
+{{ ($normalize | resources.Minify).Content | safeCSS }}
+{{ ($colors | resources.Minify).Content | safeCSS }}
+{{ ($highlight | resources.Minify).Content | safeCSS }}
+{{ ($main | resources.Minify).Content | safeCSS }}
+</style>

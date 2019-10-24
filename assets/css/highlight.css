@@ -1,0 +1,67 @@
+ .chroma { background-color: var(--Color-Gray-Darker); color: var(--Color-Gray-Brightest) ; }
+ .chroma .err { background-color: var(--Color-Gray-Darkest) ; color: var(--Color-Red-Bright) ; }
+ .chroma .k { color: var(--Color-Yellow-Bright); font-weight: bold }
+ .chroma .kc { color: var(--Color-Lime-Bright); font-weight: bold }
+ .chroma .kd { color: var(--Color-Yellow-Bright); font-weight: bold }
+ .chroma .kn { color: var(--Color-Lime-Bright); font-weight: bold }
+ .chroma .kp { color: var(--Color-Magenta-Bright); }
+ .chroma .kr { color: var(--Color-Yellow-Bright); font-weight: bold }
+ .chroma .kt { color: var(--Color-Sky-Bright); }
+ .chroma .n { color: var(--Color-Lime-Bright) ; }
+ .chroma .na { color: var(--Color-Orange-Dark) }
+ .chroma .nb { color: var(--Color-Mint-Bright) ; }
+ .chroma .nc { color: var(--Color-Lime-Bright); font-weight: bold }
+ .chroma .no { color: var(--Color-Magenta-Bright) }
+ .chroma .nd { color: var(--Color-Yellow-Dark); font-weight: bold }
+ .chroma .ni { color: var(--Color-Blue-Bright); font-weight: bold }
+ .chroma .ne { color: var(--Color-Wine-Bright); }
+ .chroma .nf { color: var(--Color-Sky-Bright) ; }
+ .chroma .nl { color: var(--Color-Yellow-Dark); font-weight: bold }
+ .chroma .nn { color: var(--Color-Sky-Bright); font-weight: bold }
+ .chroma .nt { color: var(--Color-Lime-Bright); font-weight: bold }
+ .chroma .nv { color: var(--Color-Sky-Bright); }
+ .chroma .nx { color: var(--Color-Lime-Bright); }
+ .chroma .s { color: var(--Color-Yellow-Bright) ; }
+ .chroma .sa { color: var(--Color-Yellow-Bright) ; }
+ .chroma .sb { color: var(--Color-Orange-Bright) ; }
+ .chroma .sc { color: var(--Color-Sky-Bright) ; }
+ .chroma .dl { color: var(--Color-Gray-Brighter) ; }
+ .chroma .sd { color: var(--Color-Gray-Bright); font-style: italic }
+ .chroma .s2 { color: var(--Color-Green-Bright) ; }
+ .chroma .se { color: var(--Color-Mint-Bright); }
+ .chroma .sh { color: var(--Color-Yellow-Dark); }
+ .chroma .si { color: var(--Color-Sky-Bright); }
+ .chroma .sx { color: var(--Color-Gray-Brighter) ; }
+ .chroma .sr { color: var(--Color-Yellow-Bright) ; }
+ .chroma .s1 { color: var(--Color-Yellow-Bright) ; }
+ .chroma .ss { color: var(--Color-Cyna-Bright) ; }
+ .chroma .m { color: var(--Color-Green-Bright) ; }
+ .chroma .mb { color: var(--Color-Green-Bright); }
+ .chroma .mf {color: var(--Color-Green-Bright);}
+ .chroma .mh {color: var(--Color-Green-Bright);}
+ .chroma .mi { color: var(--Color-Green-Bright); }
+ .chroma .il { color: var(--Color-Green-Bright);  }
+ .chroma .mo { color: var(--Color-Green-Bright);  }
+ .chroma .o { color: var(--Color-Gray-Brightest) ; font-weight: bold ; }
+ .chroma .ow { color: var(--Color-Gray-Brightest); font-weight: bold ; }
+ .chroma .c { color: var(--Color-Gray-Bright) ; }
+ .chroma .ch { color: var(--Color-Gray-Bright) ; font-style: italic ; }
+ .chroma .cm { color: var(--Color-Gray-Bright) ; font-style: italic ; }
+ .chroma .c1 { color: var(--Color-Gray-Bright) ; font-style: italic ; }
+ .chroma .cs { color: var(--Color-Yellow-Bright); font-style: bold ; }
+ .chroma .cp { color: var(--Color-Lime-Dark) ; font-style: bold ; }
+ .chroma .cpf { color: var(--Color-Lime-Dark) ; }
+ .chroma .gd { color: var(--Color-Gray-Lime-Dark); }
+ .chroma .ge { color: var(--Color-Gray-Brightest) ; font-style: italic ; }
+ .chroma .gr { color: var(--Color-Red-Dark) ; }
+ .chroma .gh { color: var(--Color-Gray-Bright); font-weight: bold }
+ .chroma .gi { color: var(--Color-Lime-Bright); }
+ .chroma .go { color: var(--Color-Gray-Brighter) ; }
+ .chroma .gp { color: var(--Colr-Magenta-Bright) ; font-weight: bold }
+ .chroma .gs { color: var(--Color-Gray-Brightest) ; font-weight: bold ; }
+ .chroma .gu { color: var(--Color-Gray-Brightest) ; font-weight: bold }
+ .chroma .gt { color: var(--Color-Blue-Bright) ; }
+ .chroma .gl { text-decoration: underline }
+ .chroma .w { color: var(--Color-Gray-Dark) ; }
+
+ .chroma .language-yaml .p { color: var(--Color-Lime-Bright) ; font-weight: bold ; }

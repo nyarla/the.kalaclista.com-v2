@@ -1,0 +1,28 @@
+{{- define "_as_html" -}}
+  {{- . | safeHTML -}}
+{{- end -}}
+
+{{- define "_fix_keyword_links" -}}
+  {{- if (ne (len (findRE "/notes/[^ /]+[ ][^/]+/" .)) 0) -}}
+    {{ $content := (replaceRE "/notes/([^ /]+)[ ]([^/]+)/" "/notes/$1-$2/" .) }}
+    {{- block "_fix_keyword_links" $content -}}{{- end -}}
+  {{- else -}}
+    {{- block "_as_html" . -}}{{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "_markup_keyword_links" -}}
+  {{- $content := (replaceRE "\\[{2}([^/\\n\\]]+?)\\]{2}" (printf "<a class='notes' href='%s/$1/' >$1</a>" (absURL "/notes")) .) -}}
+  {{- block "_fix_keyword_links" $content -}}{{- end -}}
+{{- end -}}
+
+{{- define "_markup_furigana" -}}
+  {{- $content := replaceRE "\\{([^|\\n]+?)[|]([^\\}\\n]+?)\\}" "<ruby>$1 <rp>（</rp> <rt>$2</rt> <rp>）</rp></ruby>" . -}}
+  {{- block "_markup_keyword_links" $content -}}{{- end -}}
+{{- end -}}
+
+{{- define "content" -}}
+  {{- block "_markup_furigana" . -}}{{- end -}}
+{{- end -}}
+
+{{- block "content" . -}}{{- end -}}

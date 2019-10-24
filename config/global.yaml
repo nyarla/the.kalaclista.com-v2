@@ -1,0 +1,124 @@
+# metadata
+metaDataForamt: yaml
+
+# language
+languageCode: ja
+defaultLanguageCode: ja
+hasCJKLanguage: true
+
+# URL
+disablePathToLower: true
+taxonomies:
+  tag: "tags"
+
+paginate: 15
+paginatePath: "pages"
+
+# format
+pygmentsCodeFences: true
+pygmentsUseClasses: true
+
+blackfriday:
+  smartypants: false
+  extensionsmark:
+    - noIntraEmphasis
+
+# output
+mediaTypes:
+  application/atom+xml:
+    suffixes:
+      - xml
+
+outputFormats:
+  JSONFeed:
+    mediaType: application/json
+    baseName: jsonfeed
+    isPlainText: true
+  JSONIndex:
+    mediaType: application/json
+    baseName: jsonindex
+    isPlainText: true
+  Atom:
+    mediaType: application/atom+xml
+    baseName: atom
+    isPainText: false
+
+layoutDir: ../../templates
+assetDir: ../../assets
+
+params:
+  adsense:
+    top: |-
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 記事上部 -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-1273544194033160"
+           data-ad-slot="8012197716"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    bottom: |-
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 記事下部 -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-1273544194033160"
+           data-ad-slot="3215490006"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+  analysis: |-
+    <!-- Fathom - simple website analytics - https://github.com/usefathom/fathom -->
+    <script>
+    (function(f, a, t, h, o, m){
+      a[h]=a[h]||function(){
+        (a[h].q=a[h].q||[]).push(arguments)
+      };
+      o=f.createElement('script'),
+      m=f.getElementsByTagName('script')[0];
+      o.async=1; o.src=t; o.id='fathom-script';
+      m.parentNode.insertBefore(o,m)
+    })(document, window, '//analysis.nyarla.net/tracker.js', 'fathom');
+    fathom('set', 'siteId', 'WIXUH');
+    fathom('trackPageview');
+    </script>
+    <!-- / Fathom -->
+
+  message: "[※なおライターだったり VTuber な<br>『にゃるら』さんとは別の人間です](/notes/nyarla-is-not-nyalra/)。**人違い注意**"
+
+  labels:
+    home: 入口
+    posts: 記事
+    echos: 雑文
+    notes: 覚書
+    bookmarks: 参照
+    search: 検索
+    archives: 記録
+
+  helps:
+    - label: "運営者"
+      items:
+        - title: "プロフィール"
+          link: "/nyarla/"
+        - title: "カラクリスタについて"
+          link: "/about/"
+    - label: "各情報"
+      items:
+        - title: "プライバシーポリシー"
+          link: "/privacy/"
+        - title: "ライセンスなど"
+          link: "/licenses/"
+    - label: "その他"
+      items:
+        - title: "GitHub"
+          link: "https://github.com/nyarla/"
+        - title: "Gitlab"
+          link: "https://gitlab.com/nyarla/"
+        - title: "Twitter"
+          link: "https://twitter.com/kalaclista"
