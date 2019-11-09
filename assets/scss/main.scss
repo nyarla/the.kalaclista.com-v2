@@ -24,7 +24,8 @@ html, body {
 #fixme,
 #note,
 main,
-#helps {
+#helps,
+.ads {
   max-width: 40em ;
   margin: 4em auto ; 
 }
@@ -121,12 +122,14 @@ a.notes {
   }
 
   & ul {
-    margin-left: calc(var(--Text-Base-Size) * 1.5) ;
-    padding-left: 0 ;
+    margin: 0 calc(var(--Text-Base-Size) * 1.5) ;
+    padding: 0 ;
 
     & li {
       padding-left: 0 ;
       list-style: circle ;
+      overflow-wrap: anywhere ;
+      word-break: break-all ;
     }
   }
 
@@ -220,6 +223,7 @@ a.notes {
 
   & .shopcard {
     margin: 1em auto ; 
+    min-height: 128px ;
     padding: 0.5em 1em ;
     border: 3px solid var(--Color-Gray-Brightest) ;
     border-radius: 1.5px ;
@@ -229,6 +233,16 @@ a.notes {
 
     &:hover, &:focus {
       border-color: var(--Color-Lime-Bright) ;
+    }
+
+    & .thumbnail {
+      float: right ;
+    }
+
+    &::after {
+      display: inline ;
+      content: '' ;
+      clear: both ;
     }
 
     & h1 {
@@ -249,40 +263,23 @@ a.notes {
         display: block ;
         margin: 0 0.5em 0 0 ;
         padding: 0.25em 0.5em ;
-        border: 1px solid ;
         box-shadow: 0px 1.5px 1.5px var(--Color-Gray-Bright) ;
         border-radius: 3px ;
 
-        transition: background-color ease 0.19s, color ease 0.19s ;
-
         &[href^="https://www.amazon.co.jp/"] {
-          --Link-NonActivated-Color: #FF9900 ;
+          --Link-NonActivated-Color: #000000 ;
           --Link-Activated-Color: #000000 ;
-
-          &:link, &:visited {
-            border-color: #FF9900 ;
-            background-color: var(--Color-Gray-Brightest) ;
-          }
-        
-          &:hover, &:active {
-            border-color: #FF9900 ;
-            background-color: #FF9900 ;
-          }
+          --Link-NonActivated-Decoration: none ;
+          --Link-Activated-Decoration: underline ;
+          background-color: #FF9900 ;
         }
       
         &[href^="https://a.r10.to/"] {
-          --Link-NonActivated-Color: #BF0000 ;
+          --Link-NonActivated-Color: #FFFFFF ;
           --Link-Activated-Color: #FFFFFF ;
-
-          &:link, &:visited {
-            border-color: #BF0000 ;
-            background-color: var(--Color-Gray-Brightest) ;
-          }
-        
-          &:hover, &:active {
-            border-color: #BF0000 ;
-            background-color: #BF0000 ;
-          }
+          --Link-NonActivated-Decoration: none ;
+          --Link-Activated-Decoration: underline ;
+          background-color: #BF0000 ;
         }
       }
     }
@@ -627,34 +624,38 @@ a.notes {
     padding: 0 1em ;
   }
 
+  .ads {
+    margin: 0 auto ;
+    max-width: 10em ;
+  }
+
   #navigation {
     text-align: center ;
     line-height: calc(var(--Text-Base-Space) * 1em ) ;
 
     & > nav > a {
-      margin: 0 auto ;
+      margin: 0 0.175em ;
     }
 
     & > .hexagon,
     & > .hexagon + #title {
       display: block ;
       line-height: 1em ;
-      margin: 0 auto 2em auto ;
-    }
-  }
-
-  #title {
-    & > * {
-      display: block ;
+      margin-right: auto ;
+      margin-left: auto ;
     }
 
-    & > span {
-      display: none ;
+    #title {
+      margin-top: 2em ;
+      margin-bottom: 2em ;
+      & > * {
+        display: block ;
+      }
     }
-  }
-    
-  #description, #description + p {
-    & br { display: block !important;}
+      
+    #description, #description + p {
+      & br { display: block !important;}
+    }
   }
 
   .content {

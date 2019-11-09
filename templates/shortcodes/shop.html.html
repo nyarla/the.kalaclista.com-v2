@@ -10,7 +10,7 @@
 
 <figure class="shopcard">
   {{ if (and (default true $args.thumbnail) (eq (getenv "AMAZON") "1")) }}
-  <a href="{{ $amazonURL }}{{ if $enabled }}?tag=nyarla-22{{ end }}">
+  <a class="thumbnail" href="{{ $amazonURL }}{{ if $enabled }}?tag=nyarla-22{{ end }}">
     <img src="{{ $imageURL }}" height="128">
   </a>
   {{ end }}
