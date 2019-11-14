@@ -50,28 +50,27 @@ params:
   adsense:
     top: |-
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 記事上部 -->
       <ins class="adsbygoogle"
            style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-fv-j+1z-5r+9a"
            data-ad-client="ca-pub-1273544194033160"
-           data-ad-slot="8012197716"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
+           data-ad-slot="5004342069"></ins>
       <script>
            (adsbygoogle = window.adsbygoogle || []).push({});
       </script>
     bottom: |-
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 記事下部 -->
       <ins class="adsbygoogle"
            style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-fv-j+1z-5r+9a"
            data-ad-client="ca-pub-1273544194033160"
-           data-ad-slot="3215490006"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
+           data-ad-slot="7658425566"></ins>
       <script>
            (adsbygoogle = window.adsbygoogle || []).push({});
       </script>
+
 
   analysis: |-
     <!-- Fathom - simple website analytics - https://github.com/usefathom/fathom -->
