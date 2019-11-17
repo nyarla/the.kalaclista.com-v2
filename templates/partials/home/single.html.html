@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ja">
+  <head prefix="og: http://ogp.me/ns# website: http://ogp.me/ns/website#">
+    {{ partial "shared/meta.html.html" . }}
+    {{ partial "home/meta.html.html" . }}
+  </head>
+  <body>
+    {{ partial "shared/header.html.html" . }}
+
+    {{ define "page" }}
+      {{ partial "functions/markup.html.html" .Page.Content }}
+    {{ end }}
+
+    {{ define "archives" }}
+      {{ range $year := seq (now.Format "2006") (-1) (2006) }}
+        {{ range $month := seq (12) (-1) (1) }}
+          {{ $displayed := false }}
+          {{ $key := printf "%04d-%02d" $year $month }}
+          {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
+            {{ if isset (index $.Site.Data.index $section).archives $key }}
+              {{ if not $displayed }}
+                <h1>{{ printf "%04d年%d月" $year $month }}</h1>
+                {{ $displayed = true }}
+              {{ end }}
+              <h2>
+                <a href="{{ absURL (printf "/%s/%04d/%02d/" $section $year $month) }}">
+                  {{ index $.Site.Params.labels $section }}
+                </a>
+              </h2>
+
+              <ul>
+                {{ range $page := sort (index (index $.Site.Data.index $section).archives $key) "date" "desc" }}
+                <li><a href="{{ $page.permalink }}">{{ $page.title }}</a></li>
+                {{ end }}
+              </ul>
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+
+    {{ define "search" }}
+      <nav>
+        <script async src='https://cse.google.com/cse.js?cx=partner-pub-1273544194033160:2995998151'></script>
+        <div class="gcse-search"></div>
+      </nav>
+    {{ end }}
+
+    <main id="home">
+      {{ $class := "" }}
+      {{ if eq .File.BaseFileName "nyarla" }}
+        {{ $class = "profile" }}
+      {{ else if eq .File.BaseFileName "archives" }}
+        {{ $class = "archives" }}
+      {{ else if eq .File.BaseFileName "search" }}
+        {{ $class = "search" }}
+      {{ end }}
+
+      <article class="note post page {{ $class }}">
+        <h1><a href="{{ .Permalink }}">{{ .Title }}</a></h1> 
+        <section class="content">
+          {{ if eq $class "archives" }}
+            {{ block "archives" . }}
+            {{ end }}
+          {{ else if eq $class "search" }}
+            {{ block "search" . }}
+            {{ end }}
+          {{ else }}
+            {{ block "page" . }}
+            {{ end }}
+          {{ end }} 
+        </section>
+      </article>
+    </main>
+
+    {{ partial "shared/footer.html.html" . }}
+  </body>
+</html>

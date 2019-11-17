@@ -6,10 +6,10 @@
 {{ $amazonURL := printf "https://www.amazon.co.jp/dp/%s/" $asin }}
 {{ $imageURL := printf "https://images-na.ssl-images-amazon.com/images/P/%s.09.LZZZZZZZ.jpg" $asin }}
 
-{{ $enabled := (and (eq (getenv "NODE_ENV") "production") (eq (getenv "AMAZON") "1")) }}
+{{ $enabled := (and (eq (getenv "NODE_ENV") "production") (eq (getenv "ENABLE_AMAZON") "1")) }}
 
 <figure class="shopcard">
-  {{ if (and (default true $args.thumbnail) (eq (getenv "AMAZON") "1")) }}
+  {{ if (and (default true $args.thumbnail) $enabled) }}
   <a class="thumbnail" href="{{ $amazonURL }}{{ if $enabled }}?tag=nyarla-22{{ end }}">
     <img src="{{ $imageURL }}" height="128">
   </a>

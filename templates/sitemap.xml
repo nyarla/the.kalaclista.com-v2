@@ -1,7 +1,7 @@
 {{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" | safeHTML }}
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
-  {{ range $item := sort (index $.Site.Data.index $section).sitemaps "permalink" "asc" }}
+  {{ range $item := sort (index $.Site.Data.index $section).sitemap "permalink" "asc" }}
   <url>
     <loc>{{ $item.permalink }}</loc>
     <lastmod>{{ $item.date }}</lastmod>

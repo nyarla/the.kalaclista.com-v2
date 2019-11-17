@@ -1,31 +1,39 @@
-{{ $json := dict }}
-{{ $json = merge $json (dict "version" "https://jsonfeed.org/version/1") }}
-{{ $json = merge $json (dict "title" .Site.Title) }}
-{{ $json = merge $json (dict "description" (replace .Site.Params.description "<br>" "")) }}
-{{ $json = merge $json (dict "home_page_url" (absURL (printf "/%s/" .Site.Params.website))) }}
-{{ $json = merge $json (dict "feed_url" (absURL (printf "/%s/jsonfeed.json" .Site.Params.website))) }}
-{{ $json = merge $json (dict "icon"  (absURL "/assets/avatar.svg")) }}
-{{ $json = merge $json (dict "favicon" (absURL "/favicon.ico")) }}
-{{ $json = merge $json (dict "author" (dict "name" "OKAMURA Naoki" "url" "https://the.kalaclista.com/nyarla/" "avatar" "https://the.kalaclista.com/assets/avatar.svg")) }}
+{{ $feed := dict }}
+{{ $feed  = merge (dict "version" "https://jsonfeed.org/version/1") $feed }}
+{{ $feed  = merge (dict "title" .Site.Title) $feed }}
+{{ $feed  = merge (dict "description" (replace .Site.Params.descrption "<br>" "")) $feed }}
+{{ $feed  = merge (dict "home_page_url" (absURL (printf "/%s/" .Site.Params.website))) $feed }}
+{{ $feed  = merge (dict "feed_url" (absURL (printf "/%s/jsonfeed.json" .Site.Params.website))) $feed }}
+{{ $feed  = merge (dict "icon" (absURL "/apple-touch-icon.png")) $feed }}
+{{ $feed  = merge (dict "author" (dict "name" "OKAMURA Naoki" "url" "https://the.kalaclista.com/nyarla/" "avatar" "https://the.kalaclista.com/assets/avatar.svg")) $feed }}
 {{ $items := slice }}
-{{ if eq .Site.Params.website "home" }}
-{{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
-{{ $items = append (index $.Site.Data $section).items $items }}
-{{ end }}
-{{ $json = merge $json (dict "items" (sort $items "date" "desc")) }}
-{{ else }}
+
+{{ if ne .Site.Params.website "home" }}
+
 {{ range $page := first 10 .Site.RegularPages.ByDate.Reverse }}
-{{ $meta := partial "meta.html.html" (slice $.Site .Page $.Data) | unmarshal }}
-{{ $item := dict }}
-{{ $item = merge $item (dict "id" $meta.permalink ) }}
-{{ $item = merge $item (dict "url" $meta.permalink ) }}
-{{ $item = merge $item (dict "title" $page.Title) }}
-{{ $item = merge $item (dict "content_html" (partial "markup.html.html" $page.Content) )}}
-{{ $item = merge $item (dict "date" $page.Date) }}
-{{ $item = merge $item (dict "tags" $page.Params.tags) }}
-{{ $item = merge $item (dict "external_link" $page.Params.link) }}
-{{ $items = append (slice $item) $items }}
+{{ $entry := dict }}
+{{ if eq $.Site.Params.website "bookmarks" }}
+{{ $entry = merge (dict "id" (replaceRE "(\\d{6})/$" "#$1" $page.Permalink)) $entry }}
+{{ $entry = merge (dict "url" (replaceRE "(\\d{6})/$" "#$1" $page.Permalink)) $entry }}
+{{ else }}
+{{ $entry = merge (dict "id" $page.Permalink) $entry }}
+{{ $entry = merge (dict "url"  $page.Permalink) $entry }}
 {{ end }}
-{{ $json = merge $json (dict "items" $items) }}
+{{ $entry = merge (dict "title" $page.Title) $entry }}
+{{ $entry = merge (dict "content_html" (partial "functions/markup.html.html" $page.Content)) $entry }}
+{{ $entry = merge (dict "date" $page.Date) $entry }}
+{{ $entry = merge (dict "tags" $page.Params.tags) $entry }}
+{{ $entry = merge (dict "external_link" $page.Params.link) $entry }}
+{{ $items = $items | append $entry }}
 {{ end }}
-{{ $json | jsonify }}
+
+{{ else }}
+
+{{ range $website := slice "posts" "echos" "notes" "bookmarks" }}
+{{ $items = $items | append (index $.Site.Data.feed $website).items }}
+{{ end }}
+
+{{ end }}
+
+{{ $feed = merge (dict "items" (sort $items "date" "desc")) $feed }}
+{{ $feed | jsonify }}

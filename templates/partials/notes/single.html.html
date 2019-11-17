@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ja">
+  <head prefix="og: http://ogp.me/ns# website: http://ogp.me/ns/website#">
+    {{ partial "shared/meta.html.html" . }}
+    {{ partial "notes/meta.html.html" . }}
+  </head>
+  <body>
+    {{ partial "shared/header.html.html" . }}
+
+    <main id="notes">
+      <article class="note post">
+        <h1><a href="{{ .Permalink }}">{{ .Title }}</a></h1>
+        <section class="content">
+          {{ partial "functions/markup.html.html" .Content }}
+        </section>
+        <p class="postedat">
+          <a href="https://the.kalaclista.com/nyarla/" class="hexagon">
+            <img  src="{{ absURL "/assets/avatar.svg" }}"
+                  width="24"
+                  height="24"
+                  alt="nyarla">
+          </a>
+            が大体<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006年1月2日" }}</time>に記述
+          </a>
+        </p>
+        <p class="comment">
+          <a href="https://scrapbox.io/kalaclista/{{ .Title }}">Scrapbox でコメントや意見を書く</a>
+        </p>
+      </article> 
+
+      <nav class="pagination">
+        {{ if .Page.Next }}
+        <a href="{{ .Page.Next.Permalink }}">前</a>
+        {{ end }}
+        {{ if .Page.Prev }}
+        <a href="{{ .Page.Prev.Permalink }}">次</a>
+        {{ end }}
+      </nav>
+    </main>
+
+    {{ partial "shared/adsense.html.html" .Site.Params.adsense.bottom }}
+
+    {{ partial "shared/footer.html.html" . }}
+  </body>
+</html>
+

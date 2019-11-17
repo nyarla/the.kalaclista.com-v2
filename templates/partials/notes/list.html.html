@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ja">
+  <head prefix="og: http://ogp.me/ns# website: http://ogp.me/ns/website#">
+    {{ partial "shared/meta.html.html" . }}
+    {{ partial "notes/meta.html.html" . }}
+  </head>
+  <body>
+    {{ partial "shared/header.html.html" . }}
+
+    {{ define "summary" }}
+    <article class="summary">
+      <a href="{{ .Permalink }}">
+        <h1>{{ .Title }}</h1>
+        <p>{{ (partial "functions/content.html.html" .Content | unmarshal).summary }}</p>
+      </a>
+    </article>
+    {{ end }}
+
+    <main id="notes">
+    {{ $count := 0 }}
+    {{ $displayed := 0 }}
+    {{ range $page := .Pages.ByDate.Reverse }}
+      {{ block "summary" $page }}
+      {{ end }}
+      {{ if and (ne $count 0) (lt $displayed 2) (eq (mod $count 7) 0) }}
+        {{ partial "shared/adsense.html.html" $.Site.Params.adsense.top }}
+        {{ $displayed = add $displayed 1 }}
+      {{ end }}
+      
+      {{ $count = add $count 1 }}
+    {{ end }}
+    </main>
+
+    {{ partial "shared/adsense.html.html" .Site.Params.adsense.bottom }}
+
+    {{ partial "shared/footer.html.html" . }}
+  </body>
+</html>

@@ -1,8 +1,3 @@
-{{ $count := index . 1 }}
-{{ with index . 0 }}
-
-{{ partial "adsense.html.html" (slice . "bottom" $count) }}
-
 <footer id="helps">
   {{ range $section := .Site.Params.helps }}
   <nav>
@@ -22,6 +17,4 @@
 
 {{ if (eq (default "development" (getenv "NODE_ENV")) "production") }}
 {{ .Site.Params.analysis | safeHTML }}
-{{ end }}
-
 {{ end }}

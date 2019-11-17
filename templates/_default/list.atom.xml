@@ -4,34 +4,35 @@
   <summary>
     {{ replace .Site.Params.description "<br>" "" }}
   </summary>
-  <link href="{{ .Permalink }}"/>
-  <link rel="alternate" href="{{ .Permalink }}"/>
+  
+  <link href="{{ .Permalink }}" />
+  <link rel="alternate" href="{{ .Permalink }}" />
   <id>{{ .Permalink }}</id>
-  <icon>{{ absURL "apple-touch-icon.png" }}</icon>
+
+  <icon>{{ absURL "/apple-touch-icon.png" }}</icon>
   <author>
     <name>OKAMURA Naoki a.k.a nyarla</name>
     <email>nyarla@kalaclista.com</email>
-    <uri>https://the.kalaclista.com/nyarla/</uri>
+    <uri>https://the.kalaclista.com/nyarla</uri>
   </author>
 
-  {{ if not .Date.IsZero }}
   <updated>{{ .Date.Format "2006-01-02T15:04:05-07:00" | safeHTML }}</updated>  
-  {{ end }}
 
   <generator>Hugo - https://gohugo.io/</generator>
 
   {{ if eq .Site.Params.website "home" }}
-    {{ $pages := slice }}
-    {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
 
-    {{ range $page := (index $.Site.Data $section).items }}
-      {{ $page = merge $page (dict "type" $section) }}
-      {{ $pages = append (slice $page) $pages }}
-    {{ end }}
-    
-    {{ end }}
+  {{ $pages := slice }}
+  {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
 
-    {{ range $page := sort $pages "date" "desc" }}
+  {{ range $page := (index $.Site.Data $section).items }}
+    {{ $page = merge $page (dict "type" $section) }}
+    {{ $pages = append (slice $page) $pages }}
+  {{ end }}
+
+  {{ end }}
+
+  {{ range $page := sort $pages "date" "desc" }}
     <entry>
       <title>{{ $page.title }}（{{ index $.Site.Params.labels $page.type }}）</title>
       <link href="{{ $page.url }}"/>
@@ -48,28 +49,27 @@
         {{ `]]>` | safeHTML }}
       </content>
     </entry>
-    {{ end }}
+  {{ end }}
+
   {{ else }}
 
   {{ range $page := first 10 .Site.RegularPages.ByDate.Reverse }}
-  {{ $meta := (partial "meta.html.html" (slice $.Site $page $.Data) | unmarshal) }}
-  <entry>
-    <title>{{ $meta.title }}{{ if eq $.Site.Params.website "home" }}{{ end }}</title>
-    <lnk href="{{ $meta.permalink }}"/>
-    <author>
-      <name>OKAMURA Naoki a.k.a nyarla</name>
-      <email>nyarla@kalaclista.com</email>
-      <uri>https://the.kalaclista.com/nyarla/</uri>
-    </author>
-    <published>{{ $page.Date.Format "2006-01-02T15:04:05-07:00" | safeHTML }}</published>
-    <lastmod>{{ $page.Lastmod.Format "2006-01-02T15:04:05-07:00" | safeHTML }}</lastmod>
-    <content type="html">
-      {{ `<![CDATA[` | safeHTML }}
-      {{ (partial "content.html.html" (slice $.Site $page $.Data) | unmarshal ).content | safeHTML }}
-      {{ `]]>` | safeHTML }}
-    </content>
-  </entry>
+  {{ $permalink := $page.Permalink }}
+  {{ if eq .Site.Params.website "bookmarks" }}
+    {{ $permalink = replaceRE "(\\d{6})/$" "#$1" $permalink }}
   {{ end }}
+  <entry>
+    <title>{{ $page.Title }}</title>
+    <link rel="{{ replaceRE "(\\d{6})/$" "#$1" $page.Permalink }}"/>
+  </entry>
 
+  <updated>{{ .Date.Format "2006-01-02T15:04:05-07:00" | safeHTML }}</updated>  
+  <lastmod>{{ .Date.Format "2006-01-02T15:04:05-07:00" | safeHTML }}</lastmod>  
+  <content type="html">
+    {{ `<![CDATA[` | safeHTML }}
+    {{ partial "functions/markup.html.html" $page.Content | safeHTML }}
+    {{ `]]>` | safeHTML }}
+  </content>
+  {{ end }}
   {{ end }}
 </feed>

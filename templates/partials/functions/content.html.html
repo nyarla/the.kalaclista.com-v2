@@ -1,0 +1,8 @@
+{{ $content := partial "functions/markup.html.html" . }}
+{{ $summary := "" }}
+{{ if (gt (strings.RuneCount $content) 140) }}
+  {{ $summary = printf "%s・・・" (substr ($content | plainify) 0 140) }}
+{{ else }}
+  {{ $summary = $content | plainify }}
+{{ end }}
+{{ dict "summary" $summary "content" $content | jsonify }}

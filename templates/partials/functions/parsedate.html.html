@@ -1,0 +1,29 @@
+{{ $result := dict }}
+{{ with .File }}
+  {{ with .Dir }}
+    {{ $date := split . "/" }}
+    {{ $year := index $date 0 }}
+
+    {{ if gt (len (findRE "\\d+" $year)) 0 }}
+      {{ $result = merge $result (dict "isDate" true "hasYear" true "year" $year) }}
+
+      {{ $month := replaceRE "^0" "" (default "" (index $date 1)) }}
+      {{ $day := replaceRE "^0" "" (default "" (index $date 2)) }}
+
+      {{ if ne $month "" }}
+        {{ $result = merge $result (dict "hasMonth" true "month" $month) }}
+      {{ end }}
+
+      {{ if ne $day "" }}
+        {{ $result = merge $result (dict "hasDay" true "day" $day) }}
+      {{ end }}
+    {{ else }}
+      {{ $result = dict "isDate" false }}
+    {{ end }}
+  {{ else }}
+    {{  $result = dict "isDate" false }}
+  {{ end }}
+{{ else }}
+  {{ $result = dict "isDate" false }}
+{{ end }}
+{{ $result | jsonify }}

@@ -1,21 +1,20 @@
 {{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" | safeHTML }}
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-<channel>
-  <title>{{ .Site.Title }}</title>
-  <link>{{ .Permalink }}</link>
-  <description>
-    {{ replace .Site.Params.description "<br>" "" }}
-  </description>
-  <generator>Hugo - https://gohugo.io/</generator>
-  <language>ja-JP</language>
-  <managingEditor>OKAMURA Naoki a.k.a nyarla</managingEditor>
-  <webMaster>OKAMURA Naoki a.k.a nyarla</webMaster>
-  <copyright>(c) 2006-2019 OKAMURA Naoki a.k.a nyarla.</copyright>
-  <atom:ink href="{{ .Permalink }}" rel="self" type="application/rss+xml" />
-  <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>
+  <channel>
+    <title>{{ .Site.Title }}</title>
+    <link>{{ .Permalink }}</link>
+    <description>
+      {{ replace .Site.Params.description "<br>" "" }}
+    </description>
+    <generator>Hugo - https://gohugo.io/</generator>
+    <language>ja-JP</language>
+    <managingEditor>OKAMURA Naoki a.k.a nyarla</managingEditor>
+    <webMaster>OKAMURA Naoki a.k.a nyarla</webMaster>
+    <copyright>(c) 2006-2019 OKAMURA Naoki a.k.a nyarla</copyright>
+    <atom:link href="{{ .Permalink }}" rel="serlf" type="application/rss+xml"/>
+    <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700"  }}</lastBuildDate>
 
-
-  {{ if eq .Site.Params.website "home" }}
+    {{ if eq .Site.Params.website "home" }}
     {{ $pages := slice }}
     {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
 
@@ -23,35 +22,39 @@
       {{ $page = merge $page (dict "type" $section) }}
       {{ $pages = append (slice $page) $pages }}
     {{ end }}
-    
+
     {{ end }}
 
     {{ range $page := sort $pages "date" "desc" }}
     <item>
-      <title>{{ $page.title }}（{{ index $.Site.Params.labels $page.type }}）</title>
+      <title>{{ $page.title }}</title>
       <link>{{ $page.url }}</link>
-      <guid>{{ $page.url }}</guid>
-      <pubDate>{{ dateFormat "Mon, 02 Jan 2006 15:04:05 -0700" $page.date | safeHTML }}</pubDate>
+      <pubDate>{{ dateFormat "Mon, 02 Jan 2006 15:04:05 -0700" $page.date }}</pubDate>
       <author>OKAMURA Naoki a.k.a nyarla nyarla@kalaclista.com</author>
+      <guid>{{  $page.url }}</guid>
       <description>
-        {{ $page.content_html }}
+        {{ $page.content_html | html }}
       </description>
     </item>
     {{ end }}
-  {{ else }}
-  {{ range $page := first 10 .Site.RegularPages.ByDate.Reverse }}
-  {{ $meta := (partial "meta.html.html" (slice $.Site $page $.Data) | unmarshal)  }}
-  <item>
-    <title>{{ $meta.title | safeHTML }}{{ if (eq $.Site.Params.website "home") }}（{{ index $.Site.Params.labels $.Site.Params.website }}）{{ end }}</title>
-    <link>{{ $meta.permalink }}</link>
-    <pubDate>{{ $page.Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
-    <author>OKAMURA Naoki a.k.a nyarla nyarla@kalaclista.com</author>
-    <guid>{{ $meta.permalink }}</guid>
-    <description>
-      {{ (partial "content.html.html" (slice $.Site $page $.Data) | unmarshal).content }}
-    </description>
-  </item>
-  {{ end }}
-  {{ end }}
-</channel>
+    {{ else }}
+
+    {{ range $page := first 10 .Site.RegularPages.ByDate.Reverse }}
+    {{ $permalink := $page.Permalink }}
+    {{ if eq .Site.Params.website "bookmarks" }}
+      {{ $permalink = replaceRE "(\\d{6})/$" "#$1" $permalink }}
+    {{ end }}
+    <item>
+      <title>{{ $page.Title }}</title>
+      <link>{{ $permalink }}</link>
+      <pubDate>{{ $page.Date.Format "Mon, 02 Jan 2006 15:04:05 -0700"  }}</pubDate>
+      <author>OKAMURA Naoki a.k.a nyarla nyarla@kalaclista.com</author>
+      <guid>{{  $permalink }}</guid>
+      <description>
+        {{ partial "functions/markup.html.html" $page.Content | html }}
+      </description>
+    </item>
+    {{ end }}
+    {{ end }}
+  </channel>
 </rss>

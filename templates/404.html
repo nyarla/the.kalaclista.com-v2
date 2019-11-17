@@ -1,14 +1,42 @@
 <!doctype html>
 <html lang="ja">
   <head prefix="og: http://ogp.me/ns# website: http://ogp.me/ns/website#">
-    {{ partial "metadata.html.html" . }} 
+    {{ partial "shared/meta.html.html" . }} 
+
+    <link rel="alternate"
+          type="application/atom+xml"
+          name="Atom 1.0 Feed for Notes"
+          href="{{ absURL "atom.xml" }}">
+
+    <link rel="alternate"
+          type="application/rss+xml"
+          name="RSS 2.0 Feed for Notes"
+          href="{{ absURL "index.xml" }}">
+
+    <link rel="alternate"
+          type="application/atom+xml"
+          name="JSON Feed for Notes"
+          href="{{ absURL "jsonfeed.json" }}">
+
+    <meta property="og:section" content="notfound">
+
+    <title>{{ .Site.Title }}・{{ (index .Site.Params "404").title }}</title>
+    <meta name="description" content="{{ (index .Site.Params "404").description }}">
+    <meta property="og:site_title" content="{{ .Site.Title }}">
+    <meta property="og:title" content="{{ (index .Site.Params "404").title}}">
+    <meta property="og:type" content="website">
   </head>
   <body id="notfound">
-    {{ partial "blocks.html.html" . }}
-    {{ partial "header.html.html" (slice . 1) }}
-    <main id="{{ .Site.Params.website }}">
-    {{ block "home" (slice .Site .Page .Data true) }}{{ end }}
+    
+    {{ partial "shared/header.html.html" . }}
+
+    <main id="home">
+      <nav>
+        <script async src='https://cse.google.com/cse.js?cx=partner-pub-1273544194033160:2995998151'></script>
+        <div class="gcse-search"></div>
+      </nav>
     </main>
-    {{ partial "footer.html.html" (slice . 1) }} 
+
+    {{ partial "shared/footer.html.html" . }} 
   </body>
 </html>

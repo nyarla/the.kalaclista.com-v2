@@ -1,41 +1,36 @@
-{{ $items := dict }}
-{{ $sitemaps := slice }}
-
-{{ $date := "" }}
+{{ $sitemap := slice }}
+{{ $archives := dict }}
 {{ $entries := slice }}
 
-{{ range $page := .Site.Pages }}
-{{ $meta := partial "meta.html.html" (slice $.Site $page $page.Data) | unmarshal }}
+{{ $pages := .Site.Pages.ByDate.Reverse }}
+{{ $before := (index $pages 0).Date }}
 
-{{ $sitemaps = append (slice (dict "permalink" $meta.permalink "date" $page.Date)) $sitemaps }}
-{{ $item := dict "title" $meta.title "permalink" $meta.permalink "date" $page.Date}}
+{{ range $page := $pages }}
+
+{{ $permalink := $page.Permalink }}
+{{ if eq $.Site.Params.website "bookmark" }}
+{{ $permalink = replaceRE "(\\d)/$" "#$1" $permalink }}
+{{ end }}
+
+{{ $entry := dict "permalink" $permalink  }}
 
 {{ if $page.IsPage }}
+{{ $title := $page.Title }}
+{{ $content := (partial "functions/content.html.html" $page.Content | unmarshal) }}
+{{ $entry = merge (dict "title" $title "summary" $content.summary "content" $content.content "date" $page.Date) $entry }}
 
-{{ if eq (len $entries) 0 }}
-
-{{ $date = $page.Date.Format "2006-01" }}
-{{ $entries = append (slice $item) $entries }}
-
-{{ else }}
-
-{{ if (eq $date ($page.Date.Format "2006-01")) }}
-{{ $entries = append (slice $item) $entries }}
-{{ else }}
-{{ $items = merge $items (dict $date $entries) }}
-{{ $date = $page.Date.Format "2006-01" }}
+{{ if ne ($before.Format "2006-01") ($page.Date.Format "2006-01") }}
+{{ $date := $before.Format "2006-01" }}
+{{ $archives = merge (dict $date $entries) $archives }}
 {{ $entries = slice }}
-{{ $entries = append (slice $item) $entries }}
+{{ $before = $page.Date }}
+{{ else }}
+{{ $entries = $entries | append $entry }}
 {{ end }}
 
+{{ else }}
+{{ $entry = merge (dict "date" now) $entry }}
 {{ end }}
-
+{{ $sitemap = $sitemap | append $entry }}
 {{ end }}
-
-{{ end }}
-
-{{ if ne (len $entries) 0 }}
-{{ $items = merge $items (dict $date $entries) }}
-{{ end }}
-
-{{ (dict "items" $items "sitemaps" $sitemaps) | jsonify }}
+{{ dict "sitemap" $sitemap "archives" $archives | jsonify }}

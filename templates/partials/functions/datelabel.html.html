@@ -1,0 +1,12 @@
+{{ $date := partial "functions/parsedate.html.html" . | unmarshal }}
+{{ $label := "" }}
+
+{{ if (and $date.hasDay $date.hasMonth $date.hasYear) }}
+  {{ $label = printf "%s年%s月%s日" $date.year $date.month $date.day }}
+{{ else if (and $date.hasMonth $date.hasYear) }}
+  {{ $label = printf "%s年%s月" $date.year $date.month }}
+{{ else if $date.hasYear }}
+  {{ $label = printf "%s年" $date.year }}
+{{ end }}
+
+{{ dict "label" $label | jsonify }}

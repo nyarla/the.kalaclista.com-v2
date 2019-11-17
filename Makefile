@@ -1,4 +1,4 @@
-.PHONY: _build clean all up
+.PHONY: all clean fixup _build_config _build_dist _build_archives
 
 all:
 	@echo stub
@@ -10,123 +10,133 @@ fixup:
 	find src -type f -name '*.md' | grep -v '_index.md' \
 		| xargs -I{} perl scripts/fixup-entries.pl {};
 
-_build:
-	cat config/global.yaml config/$(TARGET).yaml >src/$(TARGET)/config.yaml
-	@$(MAKE) prebuild-$(TARGET)
-	@$(MAKE) TARGET=$(TARGET) HOST=$(HOST) _build_http _build_https
-	@$(MAKE) postbuild-$(TARGET)
+_build_config:
+	cat config/global.yaml config/$(WEBSITE).yaml >src/$(WEBSITE)/config.yaml
 
-_build_http:
-	cd src/$(TARGET) && env AMAZON=0 hugo -d ../../dist/http/$(TARGET) -b "http://$(HOST)/$(TARGET)" --minify && cd ../../
+_build_dist:
+	cd src/$(WEBSITE) && hugo -d ../../dist/$(PROTO)/$(WEBSITE) -b "$(PROTO)://$(HOST)/$(WEBSITE)" --minify && cd ../../
 
-_build_https:
-	cd src/$(TARGET) && hugo -d ../../dist/https/$(TARGET) -b "https://the.$(HOST)/$(TARGET)" --minify && cd ../../
+_build_archives:
+	cd src/$(WEBSITE)/content \
+		&& find . -type d 			\
+		|  grep -vP "^\." 			\
+		|  xargs -P8 -I{} sh -c 'test -e "{}/_index.md" || perl -e "print qq{---\ntype:$(WEBSITE)\ndate: @{[ join q{-}, (split qr{/}, q[{}]) ]}\n---\n\n}" >{}/_index.md' 
 
-_prebuild:
-	cd src/$(TARGET)/content && find . -type d \
-		| grep -P '\d+' \
-		| sed 's!^\./!!g' \
-		| xargs -P8 -I{} sh -c 'test -e "{}/_index.md" || perl -e "print qq{---\ntype: $(TARGET)\ndate: @{[ join q[-], (split qr[/], q[{}]) ]}\n---\n\n}" >{}/_index.md'
+.PHONY: build-bookmarks-prepare build-bookmarks-http build-bookmarks-https preview-bookmarks 
 
+build-bookmarks-prepare:
+	@$(MAKE) WEBSITE=bookmarks _build_config
+	@$(MAKE) WEBSITE=bookmarks _build_archives
 
+build-bookmarks-https:
+	@env NODE_ENV=production ENABLE_AMAZON=1 $(MAKE) WEBSITE=bookmarks PROTO=https HOST=the.kalaclista.com _build_dist
 
-prebuild-bookmarks:
-	@$(MAKE) TARGET=bookmarks _prebuild
+build-bookmarks-http:
+	@env NODE_ENV=production ENABLE_AMAZON=0 $(MAKE) WEBSITE=bookmarks PROTO=http HOST=kalaclista.com _build_dist
 
-build-bookmarks:
-	@env NODE_ENV=production $(MAKE) AMAZON=1 TARGET=bookmarks HOST=kalaclista.com _build
+build-bookmarks: build-bookmarks-prepare
+	@$(MAKE) build-bookmarks-http build-bookmarks-https
 
-preview-bookmarks:
-	@env NODE_ENV=development $(MAKE) AMAZON=0 TARGET=bookmarks HOST=localhost:1313 _build
-
-postbuild-bookmarks:
-	@true
+preview-bookmarks: build-bookmarks-prepare
+	@env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) WEBSITE=bookmarks PROTO=http HOST=localhost:1313 _build_dist
 
 
+.PHONY: build-echos-prepare build-echos-http build-echos-https preview-echos 
 
-prebuild-echos:
-	@$(MAKE) TARGET=echos _prebuild
+build-echos-prepare:
+	@$(MAKE) WEBSITE=echos _build_config
+	@$(MAKE) WEBSITE=echos _build_archives
 
-build-echos:
-	@env NODE_ENV=production $(MAKE) AMAZON=1 TARGET=echos HOST=kalaclista.com _build
+build-echos-https:
+	@env NODE_ENV=production ENABLE_AMAZON=1 $(MAKE) WEBSITE=echos PROTO=https HOST=the.kalaclista.com _build_dist
 
-preview-echos:
-	@env NODE_ENV=development	$(MAKE) AMAZON=0 TARGET=echos HOST=localhost:1313 _build
+build-echos-http:
+	@env NODE_ENV=production ENABLE_AMAZON=0 $(MAKE) WEBSITE=echos PROTO=http HOST=kalaclista.com _build_dist
 
-postbuild-echos:
-	@true
+build-echos: build-echos-prepare
+	@$(MAKE) build-echos-http build-echos-https
 
-
-
-prebuild-posts:
-	@$(MAKE) TARGET=posts _prebuild
-
-build-posts:
-	@env NODE_ENV=production $(MAKE) AMAZON=1 TARGET=posts HOST=kalaclista.com _build
-
-preview-posts:
-	@env NODE_ENV=development	$(MAKE) AMAZON=0 TARGET=posts HOST=localhost:1313 _build
-
-postbuild-posts:
-	@true
+preview-echos: build-echos-prepare
+	@env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) WEBSITE=echos PROTO=http HOST=localhost:1313 _build_dist
 
 
+.PHONY: build-notes-prepare build-notes-http build-notes-https preview-notes 
 
-prebuild-notes:
-	@true
+build-notes-prepare:
+	@$(MAKE) WEBSITE=notes _build_config
+	@$(MAKE) WEBSITE=notes _build_archives
 
-build-notes:
-	@env NODE_ENV=production $(MAKE) AMAZON=1 TARGET=notes HOST=kalaclista.com _build
+build-notes-https:
+	@env NODE_ENV=production ENABLE_AMAZON=1 $(MAKE) WEBSITE=notes PROTO=https HOST=the.kalaclista.com _build_dist
 
-preview-notes:
-	@env NODE_ENV=development	$(MAKE) AMAZON=0 TARGET=notes HOST=localhost:1313 _build
+build-notes-http:
+	@env NODE_ENV=production ENABLE_AMAZON=0 $(MAKE) WEBSITE=notes PROTO=http HOST=kalaclista.com _build_dist
 
-postbuild-notes:
-	@true
+build-notes: build-notes-prepare
+	@$(MAKE) build-notes-http build-notes-https
+
+preview-notes: build-notes-prepare
+	@env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) WEBSITE=notes PROTO=http HOST=localhost:1313 _build_dist
+
+.PHONY: build-posts-prepare build-posts-http build-posts-https preview-posts 
+
+build-posts-prepare:
+	@$(MAKE) WEBSITE=posts _build_config
+	@$(MAKE) WEBSITE=posts _build_archives
+
+build-posts-https:
+	@env NODE_ENV=production ENABLE_AMAZON=1 $(MAKE) WEBSITE=posts PROTO=https HOST=the.kalaclista.com _build_dist
+
+build-posts-http:
+	@env NODE_ENV=production ENABLE_AMAZON=0 $(MAKE) WEBSITE=posts PROTO=http HOST=kalaclista.com _build_dist
+
+build-posts: build-posts-prepare
+	@$(MAKE) build-posts-http build-posts-https
+
+preview-posts: build-posts-prepare
+	@env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) WEBSITE=posts PROTO=http HOST=localhost:1313 _build_dist
 
 
-_prebuild-data:
+.PHONY: build-home-prepare-data build-home-prepare build-home-http build-home-https build-home preview-home
+
+build-home-prepare-data:
+	@cp dist/$(PROTO)/$(WEBSITE)/jsonfeed.json src/home/data/feed/$(WEBSITE).json
+	@test ! -e dist/$(PROTO)/$(WEBSITE)/jsonindex.json || mv dist/$(PROTO)/$(WEBSITE)/jsonindex.json src/home/data/index/$(WEBSITE).json
+
+build-home-prepare:
 	@test -d src/home/data/index || mkdir -p src/home/data/index
-	@cp dist/$(PROTO)/$(TARGET)/jsonfeed.json src/home/data/$(TARGET).json
-	@test ! -e dist/$(PROTO)/$(TARGET)/jsonindex.json || mv dist/$(PROTO)/$(TARGET)/jsonindex.json src/home/data/index/$(TARGET).json
+	@test -d src/home/data/feed || mkdir -p src/home/data/feed
+	@echo "posts echos notes bookmarks" \
+			| tr " " "\n" \
+			| xargs -P8 -I{} $(MAKE) PROTO=$(PROTO) WEBSITE={} build-home-prepare-data
+	@$(MAKE) WEBSITE=home _build_config
 
-prebuild-home:
-	@$(MAKE) PROTO=$(PROTO) TARGET=bookmarks _prebuild-data
-	@$(MAKE) PROTO=$(PROTO) TARGET=echos _prebuild-data
-	@$(MAKE) PROTO=$(PROTO) TARGET=notes _prebuild-data
-	@$(MAKE) PROTO=$(PROTO) TARGET=posts _prebuild-data
+build-home-http:
+	@$(MAKE) PROTO=http build-home-prepare
+	cd src/$(WEBSITE) && env NODE_ENV=production ENABLE_AMAZON=0 hugo -d ../../dist/http -b "http://kalaclista.com" --minify && cd ../../
+
+build-home-https:
+	@$(MAKE) PROTO=https build-home-prepare
+	cd src/$(WEBSITE) && env NODE_ENV=production ENABLE_AMAZON=1 hugo -d ../../dist/https -b "https://the.kalaclista.com" --minify && cd ../../
 
 build-home:
-	cat config/global.yaml config/home.yaml >src/home/config.yaml
-	@$(MAKE) PROTO=http prebuild-home
-	@cd src/home && env NODE_ENV=production AMAZON=0 hugo -d ../../dist/http -b "http://kalaclista.com" --minify && cd ../../
-	@$(MAKE) PROTO=https prebuild-home
-	@cd src/home && env NODE_ENV=production AMAZON=1 hugo -d ../../dist/https -b "https://the.kalaclista.com" --minify && cd ../../
-	@$(MAKE) postbuild-home
-
-preview-home:
-	@cat config/global.yaml config/home.yaml >src/home/config.yaml
-	@$(MAKE) PROTO=http prebuild-home
-	@cd src/home && env NODE_ENV=development AMAZON=0 hugo -d ../../dist/http -b "http://localhost:1313" --minify && cd ../../
-	@$(MAKE) PROTO=https prebuild-home
-	@cd src/home && env NODE_ENV=development AMAZON=0 hugo -d ../../dist/https -b "https://the.localhost:1313" --minify && cd ../../
-	@$(MAKE) postbuild-home
-
-postbuild-home:
+	@$(MAKE) WEBSITE=home build-home-http
+	@$(MAKE) WEBSITE=home build-home-https
 	@cp -r static/* dist/http/
 	@cp -r static/* dist/https/
 
+preview-home:
+	@$(MAKE) PROTO=http build-home-prepare
+	cd src/home && env NODE_ENV=development ENABLE_AMAZON=0 hugo -d ../../dist/http -b "http://localhost:1313" --minify && cd ../../
+	@cp -r static/* dist/http/
 
+build: clean
+	@$(MAKE) -j8 build-bookmarks build-echos build-notes build-posts
+	@$(MAKE) build-home
 
-build:
-	$(MAKE) clean
-	$(MAKE) -j8 build-bookmarks build-echos build-posts build-notes
-	$(MAKE) build-home
-
-preview:
-	$(MAKE) clean
-	$(MAKE) -j8 preview-bookmarks preview-echos preview-posts preview-notes
-	$(MAKE) preview-home
+preview: clean	
+	@$(MAKE) -j8 preview-bookmarks preview-echos preview-notes preview-posts
+	@$(MAKE) preview-home
 
 live:
 	nix-shell --run "python3 -m http.server -d dist/http 1313" -p python3
