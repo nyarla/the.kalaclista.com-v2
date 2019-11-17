@@ -9,6 +9,13 @@
 
     {{ define "summary" }}
     <article class="summary">
+      <p class="date">
+        <a href="{{ absURL (.Date.Format "/posts/2006/01/02/") }}">
+            <time datetime="{{ .Date.Format "2006-01-02" }}">
+              {{ .Date.Format "2006年1月2日" }}
+            </time>
+        </a>
+      </p>
       <a href="{{ .Permalink }}">
         <h1>{{ .Title }}</h1>
         <p>{{ (partial "functions/content.html.html" .Content | unmarshal).summary }}</p>
