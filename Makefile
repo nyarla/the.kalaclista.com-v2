@@ -5,6 +5,7 @@ all:
 
 clean:
 	rm -rf dist
+	rm -rf src/home/data/*
 
 fixup:
 	find src -type f -name '*.md' | grep -v '_index.md' \

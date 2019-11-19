@@ -25,7 +25,7 @@
   {{ $pages := slice }}
   {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
 
-  {{ range $page := (index $.Site.Data $section).items }}
+  {{ range $page := (index $.Site.Data.feed $section).items }}
     {{ $page = merge $page (dict "type" $section) }}
     {{ $pages = append (slice $page) $pages }}
   {{ end }}
