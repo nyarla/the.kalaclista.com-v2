@@ -9,6 +9,9 @@
 
     <main id="notes">
       <article class="note post">
+        <p class="date">
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006年1月2日" }}</time>
+        </p>
         <h1><a href="{{ .Permalink }}">{{ .Title }}</a></h1>
         <section class="content">
           {{ partial "functions/markup.html.html" .Content }}

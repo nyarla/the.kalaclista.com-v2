@@ -20,8 +20,9 @@ _build_dist:
 _build_archives:
 	cd src/$(WEBSITE)/content \
 		&& find . -type d 			\
-		|  grep -vP "^\." 			\
-		|  xargs -P8 -I{} sh -c 'test -e "{}/_index.md" || perl -e "print qq{---\ntype:$(WEBSITE)\ndate: @{[ join q{-}, (split qr{/}, q[{}]) ]}\n---\n\n}" >{}/_index.md' 
+		| sed "s!\./\?!!g" 			\
+		| grep -vP "^$$" 				\
+		| xargs -P8 -I{} sh -c 'test -e "{}/_index.md" || perl -e "print qq{---\ntype: $(WEBSITE)\ndate: @{[ join q{-}, (split qr{/}, q[{}]) ]}\n---\n\n}" >{}/_index.md' 
 
 .PHONY: build-bookmarks-prepare build-bookmarks-http build-bookmarks-https preview-bookmarks 
 

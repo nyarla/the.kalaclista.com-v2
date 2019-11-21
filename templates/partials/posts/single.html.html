@@ -7,8 +7,13 @@
   <body>
     {{ partial "shared/header.html.html" . }}
 
-    {{ define "echo" }}
+    {{ define "post" }}
     <article class="post">
+      <p class="date">
+        <a href="{{ absURL (.Date.Format "/posts/2006/01/02/") }}">
+            <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006年1月2日" }}</time>
+        </a>
+      </p>
       <h1><a href="{{ .Permalink }}">{{ .Title }}</a></h1>
      
       {{ with (default (slice) .Params.tags) }}
@@ -36,7 +41,7 @@
     {{ end }}
 
     <main id="posts">
-      {{ block "echo" .Page }}
+      {{ block "post" .Page }}
       {{ end }}
 
       <nav class="pagination">

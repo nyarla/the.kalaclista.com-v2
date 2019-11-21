@@ -7,8 +7,11 @@
   <body>
     {{ partial "shared/header.html.html" . }}
 
-    {{ define "summary" }}
+    {{ define "note-summary" }}
     <article class="summary">
+      <p class="date">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006年1月2日" }}</time>
+      </p>
       <a href="{{ .Permalink }}">
         <h1>{{ .Title }}</h1>
         <p>{{ (partial "functions/content.html.html" .Content | unmarshal).summary }}</p>
@@ -20,7 +23,7 @@
     {{ $count := 0 }}
     {{ $displayed := 0 }}
     {{ range $page := .Pages.ByDate.Reverse }}
-      {{ block "summary" $page }}
+      {{ block "note-summary" $page }}
       {{ end }}
       {{ if and (ne $count 0) (lt $displayed 2) (eq (mod $count 7) 0) }}
         {{ partial "shared/adsense.html.html" $.Site.Params.adsense.top }}

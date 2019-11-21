@@ -28,3 +28,7 @@
 
 <meta property="og:image" content="https://the.kalaclista.com/apple-touch-icon.png">
 <meta property="og:url" content="{{ .Page.Permalink }}">
+
+{{ if .Page.IsPage }}
+<meta name="edit" content="{{ printf "kalaclista:%s/%s" .Site.Params.website .Page.File.Path }}">
+{{ end }}

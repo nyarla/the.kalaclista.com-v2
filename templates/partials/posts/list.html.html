@@ -7,7 +7,7 @@
   <body>
     {{ partial "shared/header.html.html" . }}
 
-    {{ define "summary" }}
+    {{ define "post-summary" }}
     <article class="summary">
       <p class="date">
         <a href="{{ absURL (.Date.Format "/posts/2006/01/02/") }}">
@@ -31,7 +31,7 @@
       {{ $displayed := 0 }}
       <main id="posts">
         {{ range $idx, $page := $pages }}
-          {{ block "summary" $page }}
+          {{ block "post-summary" $page }}
           {{ end }}
 
           {{ if and (ne $count 0) (lt $displayed 1) (eq (mod $count 7) 0) }}
@@ -75,7 +75,7 @@
       {{ $displayed := 0 }}
       <main id="posts">
         {{ range $idx, $page := $pages }}
-          {{ block "summary" $page }}
+          {{ block "post-summary" $page }}
           {{ end }}
           
           {{ if and (ne $count 0) (lt $displayed 2) (eq (mod $count 7) 0) }}
@@ -92,4 +92,4 @@
 
     {{ partial "shared/footer.html.html" . }}
   </body>
-<
+</html>

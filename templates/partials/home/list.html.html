@@ -14,9 +14,13 @@
         {{ if (ne $section "bookmarks") }}
           <article class="summary">
             <p class="date">
-              <a href="{{ absURL (dateFormat "/posts/2006/01/02/" $data.date) }}">
+              {{ if ne $section "notes" }}
+              <a href="{{ absURL (dateFormat (printf "/%s/2006/01/02/" $section) $data.date) }}">
                   <time datetime="{{ dateFormat "2006-01-02" $data.date }}">{{ dateFormat "2006年1月2日" $data.date }}</time>
               </a>
+              {{ else }}
+              <time datetime="{{ dateFormat "2006-01-02" $data.date }}">{{ dateFormat "2006年1月2日" $data.date }}</time>
+              {{ end }}
             </p>
             <a href="{{ $data.url }}">
               <h1>{{ $data.title }}</h1>
