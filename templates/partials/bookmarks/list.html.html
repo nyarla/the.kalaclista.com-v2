@@ -8,7 +8,7 @@
     {{ partial "shared/header.html.html" . }}
 
     {{ define "bookmark" }}
-    <article class="bookmark">
+    <article class="bookmark" data-edit-protocol="kalaclista:bookmarks/{{ .File.Path }}" data-edit-label="{{ .Title }}">
       <h1 id="{{ .Date.Format "150405" }}">
         <a href="{{ .Params.link }}">{{ .Title }}</a>
       </h1>

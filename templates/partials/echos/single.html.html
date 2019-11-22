@@ -8,7 +8,7 @@
     {{ partial "shared/header.html.html" . }}
 
     {{ define "echo" }}
-    <article class="echo post">
+    <article class="echo post" data-edit-protocol="kalaclista:echos/{{ .File.Path }}" data-edit-label="{{ .Title }}">
       <p class="date">
         <a href="{{ absURL (.Date.Format "/echos/2006/01/02/") }}">
             <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006年1月2日" }}</time>

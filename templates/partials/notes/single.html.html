@@ -8,7 +8,7 @@
     {{ partial "shared/header.html.html" . }}
 
     <main id="notes">
-      <article class="note post">
+      <article class="note post" data-edit-protocol="kalaclista:notes/{{ .File.Path }}" data-edit-label="{{ .Title }}">
         <p class="date">
           <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006年1月2日" }}</time>
         </p>
