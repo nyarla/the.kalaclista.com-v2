@@ -60,7 +60,7 @@
 {{ $label := $link }}
 
 {{ if (eq .Site.Params.website "notes") }}
-  {{ $label = printf "https://the.kalaclista.com/%s/" .Page.Params.slug }}
+  {{ $label = replace (printf "https://the.kalaclista.com/%s/" .Page.Params.slug) " " "-" }}
 {{ end }}
 
 <aside id="note" class="content">
