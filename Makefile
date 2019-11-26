@@ -148,5 +148,5 @@ up:
 	tmux-up
 
 push: build
-	rsync -e "ssh -p 57092" -rtOuv --modify-window=1 --delete dist/http/ console@web.internal.nyarla.net:/data/dist/kalaclista.com/
-	rsync -e "ssh -p 57092" -rtOuv --modify-window=1 --delete dist/https/ console@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
+	rsync -e "ssh -p 57092" -rtOuv --modify-window=1 --delete dist/http/ www-data@web.internal.nyarla.net:/data/dist/kalaclista.com/
+	rsync -e "ssh -p 57092" -rtOuv --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
