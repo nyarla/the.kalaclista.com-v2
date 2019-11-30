@@ -23,9 +23,13 @@
                 {{ $displayed = true }}
               {{ end }}
               <h2>
+                {{ if ne $section "notes" }}
                 <a href="{{ absURL (printf "/%s/%04d/%02d/" $section $year $month) }}">
                   {{ index $.Site.Params.labels $section }}
                 </a>
+                {{ else }}
+                  {{ index $.Site.Params.labels $section }}
+                {{ end }}
               </h2>
 
               <ul>
