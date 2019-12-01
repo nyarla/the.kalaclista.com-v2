@@ -143,7 +143,7 @@ build: clean
 	@$(MAKE) build-home
 
 build-via-aws-codebuild: clean
-	@$(MAKE) -j2 build-bookmarks build-echos build-notes build-posts
+	@$(MAKE) -j8 build-bookmarks build-echos build-notes build-posts
 	@$(MAKE) build-home
 
 preview: clean	
@@ -162,7 +162,7 @@ deploy:
 	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com" -rtOuv --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
 
 deploy-via-aws-codebuild:
-		rsync -e "ssh -p 57092 -i ~/.ssh/id_kalaclista.com -o 'StrictHostKeyChecking no'" -rtOuv --modify-window=1 --delete dist/http/ www-data@web.internal.nyarla.net:/data/dist/kalaclista.com/
-	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com -o 'StrictHostKeyChecking no'" -rtOuv --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
+	rsync -e "ssh -p 57092 -i     ~/.ssh/id_kalaclista.com -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -rtOuv --modify-window=1 --delete dist/http/  www-data@web.internal.nyarla.net:/data/dist/kalaclista.com/
+	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -rtOuv --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
 
 push: build deploy
