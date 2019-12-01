@@ -15,7 +15,7 @@ _build_config:
 	cat config/global.yaml config/$(WEBSITE).yaml >src/$(WEBSITE)/config.yaml
 
 _build_dist:
-	cd src/$(WEBSITE) && hugo -d ../../dist/$(PROTO)/$(WEBSITE) -b "$(PROTO)://$(HOST)/$(WEBSITE)" --minify && cd ../../
+	cd src/$(WEBSITE) && hugo --quiet -d ../../dist/$(PROTO)/$(WEBSITE) -b "$(PROTO)://$(HOST)/$(WEBSITE)" --minify && cd ../../
 
 _build_archives:
 	cd src/$(WEBSITE)/content \
@@ -121,11 +121,11 @@ build-home-prepare:
 
 build-home-http:
 	@$(MAKE) PROTO=http build-home-prepare
-	cd src/$(WEBSITE) && env NODE_ENV=production ENABLE_AMAZON=0 hugo -d ../../dist/http -b "http://kalaclista.com" --minify && cd ../../
+	cd src/$(WEBSITE) && env NODE_ENV=production ENABLE_AMAZON=0 hugo --quiet -d ../../dist/http -b "http://kalaclista.com" --minify && cd ../../
 
 build-home-https:
 	@$(MAKE) PROTO=https build-home-prepare
-	cd src/$(WEBSITE) && env NODE_ENV=production ENABLE_AMAZON=1 hugo -d ../../dist/https -b "https://the.kalaclista.com" --minify && cd ../../
+	cd src/$(WEBSITE) && env NODE_ENV=production ENABLE_AMAZON=1 hugo --quiet -d ../../dist/https -b "https://the.kalaclista.com" --minify && cd ../../
 
 build-home:
 	@$(MAKE) WEBSITE=home build-home-http
@@ -135,7 +135,7 @@ build-home:
 
 preview-home:
 	@$(MAKE) PROTO=http build-home-prepare
-	cd src/home && env NODE_ENV=development ENABLE_AMAZON=0 hugo -d ../../dist/http -b "http://localhost:1313" --minify && cd ../../
+	cd src/home && env NODE_ENV=development ENABLE_AMAZON=0 hugo --quiet -d ../../dist/http -b "http://localhost:1313" --minify && cd ../../
 	@cp -r static/* dist/http/
 
 build: clean
@@ -157,12 +157,22 @@ up:
 	echo "." >.edit
 	tmux-up
 
+deploy-http:
+	rsync -e "ssh -p 57092 -i ~/.ssh/id_kalaclista.com" -rtOu --modify-window=1 --delete dist/http/ www-data@web.internal.nyarla.net:/data/dist/kalaclista.com/
+
+deploy-https:
+	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com" -rtOu --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
+
 deploy:
-	rsync -e "ssh -p 57092 -i ~/.ssh/id_kalaclista.com" -rtOuv --modify-window=1 --delete dist/http/ www-data@web.internal.nyarla.net:/data/dist/kalaclista.com/
-	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com" -rtOuv --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
+	@$(MAKE) -j8 deploy-http deploy-https
 
 deploy-via-aws-codebuild:
-	rsync -e "ssh -p 57092 -i     ~/.ssh/id_kalaclista.com -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -rtOuv --modify-window=1 --delete dist/http/  www-data@web.internal.nyarla.net:/data/dist/kalaclista.com/
-	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -rtOuv --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
+	@$(MAKE) -j8 deploy-http-via-aws-codebuild deploy-https-via-aws-codebuild
+
+deploy-http-via-aws-codebuild:
+	rsync -e "ssh -p 57092 -i ~/.ssh/id_kalaclista.com -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -rtOu --modify-window=1 --delete dist/http/  www-data@web.internal.nyarla.net:/data/dist/kalaclista.com/
+
+deploy-https-via-aws-codebuild:
+	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -rtOu --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
 
 push: build deploy
