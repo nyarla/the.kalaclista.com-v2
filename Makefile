@@ -139,11 +139,15 @@ preview-home:
 	@cp -r static/* dist/http/
 
 build: clean
+	@$(MAKE) -j8 build-bookmarks build-echos build-notes build-posts
+	@$(MAKE) build-home
+
+build-via-aws-codebuild: clean
 	@$(MAKE) -j2 build-bookmarks build-echos build-notes build-posts
 	@$(MAKE) build-home
 
 preview: clean	
-	@$(MAKE) -j2 preview-bookmarks preview-echos preview-notes preview-posts
+	@$(MAKE) -j8 preview-bookmarks preview-echos preview-notes preview-posts
 	@$(MAKE) preview-home
 
 live:
@@ -156,5 +160,9 @@ up:
 deploy:
 	rsync -e "ssh -p 57092 -i ~/.ssh/id_kalaclista.com" -rtOuv --modify-window=1 --delete dist/http/ www-data@web.internal.nyarla.net:/data/dist/kalaclista.com/
 	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com" -rtOuv --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
+
+deploy-via-aws-codebuld:
+	rsync -avz -e "ssh -p 57092 -o 'StrictHostKeyChecking no'" --delete dist/http/  www-data@web.internal.nyarla.net:/data/dist/kalaclista.com
+	rsync -avz -e "ssh -p 57092 -o 'StrictHostKeyChecking no'" --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com
 
 push: build deploy
