@@ -71,14 +71,17 @@
         {{ $date := partial "functions/parsedate.html.html" .Page | unmarshal }}
 
         {{ if (and (default false $date.hasDay) (default false $date.hasMonth)) }}
-          {{ $pages = where .Site.RegularPages.ByDate.Reverse "Date.Day" "==" (int $date.day) }}
-          {{ $pages = where $pages "Date.Month" "==" (int $date.month) }}
-          {{ $pages = where $pages "Date.Year" "==" (int $date.year) }}
+          {{ $pages = where .Pages.ByDate.Reverse "IsPage" "==" true }}
         {{ else if (default false $date.hasMonth) }}
-          {{ $pages = where .Site.RegularPages.ByDate.Reverse "Date.Month" "==" (int $date.month) }}
-          {{ $pages = where $pages "Date.Year" "==" (int $date.year) }}
+          {{ range $day := .Pages.ByDate.Reverse }}
+            {{ $pages = $pages | append ($day.GetPage ($day.Date.Format "/2006/01/02")).Pages.ByDate.Reverse }}
+          {{ end }}
         {{ else }}
-          {{ $pages = where .Site.RegularPages.ByDate.Reverse "Date.Year" "==" (int $date.year) }}
+          {{ range $month := .Pages.ByDate.Reverse }}
+            {{ range $day := ($month.GetPage (replaceRE "(\\d{4})/(\\d{2})/" "/$1/$2" $month.File.Dir)).Pages.ByDate.Reverse }}
+              {{ $pages = $pages | append ($day.GetPage ($day.Date.Format "/2006/01/02")).Pages.ByDate.Reverse }}
+            {{ end }}
+          {{ end }}
         {{ end }}
       {{ end }}
 
