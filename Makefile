@@ -162,7 +162,7 @@ deploy:
 	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com" -rtOuv --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
 
 deploy-via-aws-codebuild:
-	rsync -avz -e "ssh -p 57092 -o 'StrictHostKeyChecking no'" --delete dist/http/  www-data@web.internal.nyarla.net:/data/dist/kalaclista.com
-	rsync -avz -e "ssh -p 57092 -o 'StrictHostKeyChecking no'" --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com
+		rsync -e "ssh -p 57092 -i ~/.ssh/id_kalaclista.com -o 'StrictHostKeyChecking no'" -rtOuv --modify-window=1 --delete dist/http/ www-data@web.internal.nyarla.net:/data/dist/kalaclista.com/
+	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com -o 'StrictHostKeyChecking no'" -rtOuv --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
 
 push: build deploy
