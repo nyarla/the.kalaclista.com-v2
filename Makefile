@@ -24,7 +24,7 @@ _build_archives:
 		| grep -vP "^$$" 				\
 		| xargs -P8 -I{} sh -c 'test -e "{}/_index.md" || perl -e "print qq{---\ntype: $(WEBSITE)\ndate: @{[ join q{-}, (split qr{/}, q[{}]) ]}\n---\n\n}" >{}/_index.md' 
 
-.PHONY: build-bookmarks-prepare build-bookmarks-http build-bookmarks-https preview-bookmarks 
+.PHONY: build-bookmarks-prepare build-bookmarks-http build-bookmarks-https preview-bookmarks check-bookmarks
 
 build-bookmarks-prepare:
 	@$(MAKE) WEBSITE=bookmarks _build_config
@@ -42,6 +42,9 @@ build-bookmarks: build-bookmarks-prepare
 preview-bookmarks: build-bookmarks-prepare
 	@env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) WEBSITE=bookmarks PROTO=http HOST=localhost:1313 _build_dist
 
+check-bookmarks:
+	@pt -N --nogroup '  - ' src/bookmarks/content | cut -d: -f2 \
+		| sed 's/  - //' | grep -vP "[^a-zA-Z0-9\-]+" | sort | uniq
 
 .PHONY: build-echos-prepare build-echos-http build-echos-https preview-echos 
 
@@ -80,7 +83,7 @@ build-notes: build-notes-prepare
 preview-notes: build-notes-prepare
 	@env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) WEBSITE=notes PROTO=http HOST=localhost:1313 _build_dist
 
-.PHONY: build-posts-prepare build-posts-http build-posts-https preview-posts 
+.PHONY: build-posts-prepare build-posts-http build-posts-https preview-posts check-posts 
 
 build-posts-prepare:
 	@$(MAKE) WEBSITE=posts _build_config
@@ -98,6 +101,9 @@ build-posts: build-posts-prepare
 preview-posts: build-posts-prepare
 	@env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) WEBSITE=posts PROTO=http HOST=localhost:1313 _build_dist
 
+check-posts:
+	@pt -N --nogroup '  - ' src/posts/content | cut -d: -f2 \
+		| sed 's/  - //' | grep -vP "[^a-zA-Z0-9\-]+" | sort | uniq
 
 .PHONY: build-home-prepare-data build-home-prepare build-home-http build-home-https build-home preview-home
 
