@@ -1,0 +1,35 @@
+version: 0.2
+
+env:
+  parameter-store:
+    SSH_DEPLOY_HTTP: '/CodeBuild/kalaclista-deployment-http'
+    SSH_DEPLOY_HTTPS: '/CodeBuild/kalaclista-deployment-https'
+    GITHUB_TOKEN: '/CodeBuild/kalaclista-deployment-github-token'
+
+phases:
+  install:
+    runtime-versions:
+      golang: 1.13
+    commands:
+      - curl -Lo /tmp/hugo.deb https://github.com/gohugoio/hugo/releases/download/v0.60.1/hugo_extended_0.60.1_Linux-64bit.deb
+      - dpkg -i /tmp/hugo.deb
+      - rm -rf /tmp/hugo.deb
+  pre_build:
+    commands:
+      - export LC_ALL="en_US.UTF-8" 
+      - locale-gen en_US en_US.UTF-8 
+      - dpkg-reconfigure locales
+      - test -d $HOME/.ssh || mkdir -p $HOME/.ssh
+      - echo "$SSH_DEPLOY_HTTP"   >$HOME/.ssh/id_kalaclista.com; chmod 400 $HOME/.ssh/id_kalaclista.com
+      - echo "$SSH_DEPLOY_HTTPS"  >$HOME/.ssh/id_the.kalaclista.com; chmod 400 $HOME/.ssh/id_the.kalaclista.com
+      - curl -L -o hugo.tar.gz https://github.com/nyarla/the.kalaclista.com-v2/archive/master.tar.gz
+      - curl -L -o src.tar.gz https://nyarla:${GITHUB_TOKEN}@github.com/nyarla/the.kalaclista.com-v2-content/archive/master.tar.gz
+      - tar -zxvf hugo.tar.gz -C . ; mv the.kalaclista.com-v2-master repo
+      - tar -zxvf src.tar.gz -C . ; mv the.kalaclista.com-v2-content-master/* repo/src
+      - cd repo
+  build:
+    commands:
+      - make build-via-aws-codebuild --silent
+  post_build:
+    commands:
+      - make deploy-via-aws-codebuild --silent
