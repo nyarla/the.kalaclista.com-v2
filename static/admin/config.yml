@@ -1,0 +1,106 @@
+site_url: https://the.kalaclista.com
+logo_url: https://the.kalaclista.com/assets/avatar.svg
+
+backend:
+  name: github
+  site_domain: the.kalaclista.com
+  repo: nyarla/the.kalaclista.com-v2-content
+  branch: master
+  base_url: https://api.nyarla.net
+
+media_folder: static/assets/images
+public_folder: assets/images
+
+show_preview_link: false
+
+slug:
+  encoding: unicode
+  clean_accent: false
+  sanitize_replacement: '-'
+
+collections:
+  - name: posts
+    label: 記事
+    identifier_field: slug
+    folder: "posts/content"
+    path:   "{{year}}/{{month}}/{{day}}/{{slug}}"
+    format: "yaml-frontmatter"
+    extension: "md"
+    slug: "{{hour}}{{minute}}{{second}}"
+    fields:
+      - { name: "type",   label: "種類",        widget: "hidden",   default: "posts", required: true }
+      - { name: "title",  label: "タイトル",    widget: "string",   default: "",      required: true } 
+      - { name: "date",   label: "日付け",      widget: "datetime", default: "",      required: true, format: "YYYY-MM-DDTHH:mm:ssZZ"}
+      - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",      required: true }
+      - { name: "tags",   label: "タグ",        widget: "list",     default: [],      required: true }
+      - { name: "ads",    label: "広告" ,       widget: "boolean",  default: true,    required: true }
+      - { name: "fixme",  label: "要修正",      widget: "boolean",  default: true,    required: true }
+      - { name: "body",   label: "本文",        widget: "markdown", default: "",      required: true, buttons: [] }
+
+  - name: echos
+    label: 雑記
+    identifier_field: slug
+    folder: "echos/content"
+    path:   "{{year}}/{{month}}/{{day}}/{{slug}}"
+    format: "yaml-frontmatter"
+    extension: "md"
+    slug: "{{hour}}{{minute}}{{second}}"
+    fields:
+      - { name: "type",   label: "種類",        widget: "hidden",   default: "echos", required: true }
+      - { name: "title",  label: "タイトル",    widget: "string",   default: "",      required: true } 
+      - { name: "date",   label: "日付け",      widget: "datetime", default: "",      required: true, format: "YYYY-MM-DDTHH:mm:ssZZ"}
+      - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",      required: true }
+      - { name: "ads",    label: "広告" ,       widget: "boolean",  default: true,    required: true }
+      - { name: "fixme",  label: "要修正",      widget: "boolean",  default: true,    required: true }
+      - { name: "body",   label: "本文",        widget: "markdown", default: "",      required: true, buttons: [] }
+
+  - name: notes
+    label: 覚書
+    identifier_field: slug
+    folder: "notes/content"
+    format: "yaml-frontmatter"
+    extension: "md"
+    slug: "{{slug}}"
+    fields:
+      - { name: "type",   label: "種類",        widget: "hidden",   default: "notes", required: true }
+      - { name: "title",  label: "タイトル",    widget: "string",   default: "",      required: true } 
+      - { name: "date",   label: "日付け",      widget: "datetime", default: "",      required: true, format: "YYYY-MM-DDTHH:mm:ssZZ"}
+      - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",      required: true }
+      - { name: "ads",    label: "広告" ,       widget: "boolean",  default: true,    required: true }
+      - { name: "fixme",  label: "要修正",      widget: "boolean",  default: true,    required: true }
+      - { name: "body",   label: "本文",        widget: "markdown", default: "",      required: true, buttons: [] }
+
+  - name: bookmarks
+    label: 参照
+    identifier_field: slug
+    folder: "bookmarks/content"
+    path:   "{{year}}/{{month}}/{{day}}/{{slug}}"
+    format: "yaml-frontmatter"
+    extension: "md"
+    slug: "{{slug}}"
+    fields:
+      - { name: "type",   label: "種類",        widget: "hidden",   default: "bookmarks", required: true }
+      - { name: "title",  label: "タイトル",    widget: "string",   default: "",          required: true } 
+      - { name: "date",   label: "日付け",      widget: "datetime", default: "",          required: true, format: "YYYY-MM-DDTHH:mm:ssZZ"}
+      - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",          required: true }
+      - { name: "tags",   label: "タグ",        widget: "list",     default: [],          required: true }
+      - { name: "ads",    label: "広告" ,       widget: "boolean",  default: true,        required: true }
+      - { name: "fixme",  label: "要修正",      widget: "boolean",  default: true,        required: true }
+      - { name: "body",   label: "本文",        widget: "markdown", default: "",          required: true, buttons: [] }
+
+  - name: home
+    label: 記述
+    identifier_field: slug
+    folder: "home/content"
+    format: "yaml-frontmatter"
+    extension: "md"
+    slug: "{{slug}}"
+    fields:
+      - { name: "type",   label: "種類",        widget: "hidden",   default: "pages", required: true }
+      - { name: "title",  label: "タイトル",    widget: "string",   default: "",      required: true } 
+      - { name: "date",   label: "日付け",      widget: "datetime", default: "",      required: true, format: "YYYY-MM-DDTHH:mm:ssZZ"}
+      - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",      required: true }
+      - { name: "body",   label: "本文",        widget: "markdown", default: "",      required: true, buttons: [] }
+
+editor:
+  preview: false
