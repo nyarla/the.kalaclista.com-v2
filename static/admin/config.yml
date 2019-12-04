@@ -30,11 +30,11 @@ collections:
     fields:
       - { name: "type",   label: "種類",        widget: "hidden",   default: "posts", required: true }
       - { name: "title",  label: "タイトル",    widget: "string",   default: "",      required: true } 
-      - { name: "date",   label: "日付け",      widget: "datetime", default: "",      required: true, format: "YYYY-MM-DDTHH:mm:ssZZ"}
+      - { name: "date",   label: "日付け",      widget: "datetime",                   required: true, format: "YYYY-MM-DDTHH:mm:ssZ", dateFormat: "YYYY-MM-DD", timeFormat: "HH:mm:ss Z"}
       - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",      required: true }
       - { name: "tags",   label: "タグ",        widget: "list",     default: [],      required: true }
       - { name: "ads",    label: "広告" ,       widget: "boolean",  default: true,    required: true }
-      - { name: "fixme",  label: "要修正",      widget: "boolean",  default: true,    required: true }
+      - { name: "fixme",  label: "要修正",      widget: "boolean",  default: false,   required: true }
       - { name: "body",   label: "本文",        widget: "markdown", default: "",      required: true, buttons: [] }
 
   - name: echos
@@ -48,10 +48,10 @@ collections:
     fields:
       - { name: "type",   label: "種類",        widget: "hidden",   default: "echos", required: true }
       - { name: "title",  label: "タイトル",    widget: "string",   default: "",      required: true } 
-      - { name: "date",   label: "日付け",      widget: "datetime", default: "",      required: true, format: "YYYY-MM-DDTHH:mm:ssZZ"}
+      - { name: "date",   label: "日付け",      widget: "datetime",                   required: true, format: "YYYY-MM-DDTHH:mm:ssZ", dateFormat: "YYYY-MM-DD", timeFormat: "HH:mm:ss Z"}
       - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",      required: true }
       - { name: "ads",    label: "広告" ,       widget: "boolean",  default: true,    required: true }
-      - { name: "fixme",  label: "要修正",      widget: "boolean",  default: true,    required: true }
+      - { name: "fixme",  label: "要修正",      widget: "boolean",  default: false,   required: true }
       - { name: "body",   label: "本文",        widget: "markdown", default: "",      required: true, buttons: [] }
 
   - name: notes
@@ -64,10 +64,10 @@ collections:
     fields:
       - { name: "type",   label: "種類",        widget: "hidden",   default: "notes", required: true }
       - { name: "title",  label: "タイトル",    widget: "string",   default: "",      required: true } 
-      - { name: "date",   label: "日付け",      widget: "datetime", default: "",      required: true, format: "YYYY-MM-DDTHH:mm:ssZZ"}
+      - { name: "date",   label: "日付け",      widget: "datetime",                   required: true, format: "YYYY-MM-DDTHH:mm:ssZ", dateFormat: "YYYY-MM-DD", timeFormat: "HH:mm:ss Z"}
       - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",      required: true }
       - { name: "ads",    label: "広告" ,       widget: "boolean",  default: true,    required: true }
-      - { name: "fixme",  label: "要修正",      widget: "boolean",  default: true,    required: true }
+      - { name: "fixme",  label: "要修正",      widget: "boolean",  default: false,   required: true }
       - { name: "body",   label: "本文",        widget: "markdown", default: "",      required: true, buttons: [] }
 
   - name: bookmarks
@@ -80,17 +80,17 @@ collections:
     slug: "{{slug}}"
     fields:
       - { name: "type",   label: "種類",        widget: "hidden",   default: "bookmarks", required: true }
-      - { name: "title",  label: "タイトル",    widget: "string",   default: "",          required: true } 
-      - { name: "date",   label: "日付け",      widget: "datetime", default: "",          required: true, format: "YYYY-MM-DDTHH:mm:ssZZ"}
+      - { name: "title",  label: "タイトル",    widget: "querystring", query: "title",    required: true } 
+      - { name: "link",   label: "URL",         widget: "querystring", query: "url",      required: true }
+      - { name: "date",   label: "日付け",      widget: "datetime",                       required: true, format: "YYYY-MM-DDTHH:mm:ssZ", dateFormat: "YYYY-MM-DD", timeFormat: "HH:mm:ss Z"}
       - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",          required: true }
       - { name: "tags",   label: "タグ",        widget: "list",     default: [],          required: true }
       - { name: "ads",    label: "広告" ,       widget: "boolean",  default: true,        required: true }
-      - { name: "fixme",  label: "要修正",      widget: "boolean",  default: true,        required: true }
+      - { name: "fixme",  label: "要修正",      widget: "boolean",  default: false,       required: true }
       - { name: "body",   label: "本文",        widget: "markdown", default: "",          required: true, buttons: [] }
 
   - name: home
     label: 記述
-    identifier_field: slug
     folder: "home/content"
     format: "yaml-frontmatter"
     extension: "md"
@@ -98,8 +98,7 @@ collections:
     fields:
       - { name: "type",   label: "種類",        widget: "hidden",   default: "pages", required: true }
       - { name: "title",  label: "タイトル",    widget: "string",   default: "",      required: true } 
-      - { name: "date",   label: "日付け",      widget: "datetime", default: "",      required: true, format: "YYYY-MM-DDTHH:mm:ssZZ"}
-      - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",      required: true }
+      - { name: "date",   label: "日付け",      widget: "datetime",                   required: true, format: "YYYY-MM-DDTHH:mm:ssZ", dateFormat: "YYYY-MM-DD", timeFormat: "HH:mm:ss Z"}
       - { name: "body",   label: "本文",        widget: "markdown", default: "",      required: true, buttons: [] }
 
 editor:

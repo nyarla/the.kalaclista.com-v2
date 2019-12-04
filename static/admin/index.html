@@ -8,5 +8,25 @@
 <body>
   <!-- Include the script that builds the page and powers Netlify CMS -->
   <script src="https://unpkg.com/netlify-cms@^2.10.0-beta.3/dist/netlify-cms.js"></script>
+  <script>
+    "use strict";
+
+    const StringWidget = CMS.getWidget('string');
+
+    class QueryStringWidgetControl extends StringWidget.control {
+      componentDidMount() {
+        const { field, onChange, value } = this.props;
+
+        if ( ! value || value === '' ) {
+          const val = new URL(window.location.href).searchParams.get(field.get('query'));
+          setTimeout(() => {
+            onChange(val);
+          }, 0);
+        }
+      }
+    }
+
+    CMS.registerWidget('querystring', QueryStringWidgetControl, StringWidget.preview);
+  </script>
 </body>
 </html>
