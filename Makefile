@@ -109,7 +109,7 @@ check-posts:
 
 build-home-prepare-data:
 	@cp dist/$(PROTO)/$(WEBSITE)/jsonfeed.json src/home/data/feed/$(WEBSITE).json
-	@test ! -e dist/$(PROTO)/$(WEBSITE)/jsonindex.json || mv dist/$(PROTO)/$(WEBSITE)/jsonindex.json src/home/data/index/$(WEBSITE).json
+	@mv dist/$(PROTO)/$(WEBSITE)/jsonindex.json src/home/data/index/$(WEBSITE).json
 
 build-home-prepare:
 	@test -d src/home/data/index || mkdir -p src/home/data/index
@@ -175,4 +175,8 @@ deploy-http-via-aws-codebuild:
 deploy-https-via-aws-codebuild:
 	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -rtOu --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
 
-push: build deploy
+pull:
+	cd src && git pull origin master && cd ../
+	git pull origin master
+
+push: pull build deploy
