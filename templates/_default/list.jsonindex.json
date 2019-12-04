@@ -8,8 +8,8 @@
 {{ range $page := $pages }}
 
 {{ $permalink := $page.Permalink }}
-{{ if eq $.Site.Params.website "bookmark" }}
-{{ $permalink = replaceRE "(\\d)/$" "#$1" $permalink }}
+{{ if eq $.Site.Params.website "bookmarks" }}
+{{ $permalink = replaceRE "(\\d+)/$" "#$1" $permalink }}
 {{ end }}
 
 {{ $entry := dict "permalink" $permalink  }}
