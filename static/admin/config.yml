@@ -27,10 +27,13 @@ collections:
     format: "yaml-frontmatter"
     extension: "md"
     slug: "{{hour}}{{minute}}{{second}}"
+    create: true
+    delete: false
     fields:
       - { name: "type",   label: "種類",        widget: "hidden",   default: "posts", required: true }
       - { name: "title",  label: "タイトル",    widget: "string",   default: "",      required: true } 
       - { name: "date",   label: "日付け",      widget: "datetime",                   required: true, format: "YYYY-MM-DDTHH:mm:ssZ", dateFormat: "YYYY-MM-DD", timeFormat: "HH:mm:ss Z"}
+      - { name: "slug",   label: "ファイル名",  widget: "datetime",                   required: true, format: "HHmmss", dateFormat: false, timeFormat: "HH:mm:ss Z" }
       - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",      required: true }
       - { name: "tags",   label: "タグ",        widget: "list",     default: [],      required: true }
       - { name: "ads",    label: "広告" ,       widget: "boolean",  default: true,    required: true }
@@ -45,11 +48,13 @@ collections:
     format: "yaml-frontmatter"
     extension: "md"
     slug: "{{hour}}{{minute}}{{second}}"
+    create: true
+    delete: false
     fields:
       - { name: "type",   label: "種類",        widget: "hidden",   default: "echos", required: true }
       - { name: "title",  label: "タイトル",    widget: "string",   default: "",      required: true } 
       - { name: "date",   label: "日付け",      widget: "datetime",                   required: true, format: "YYYY-MM-DDTHH:mm:ssZ", dateFormat: "YYYY-MM-DD", timeFormat: "HH:mm:ss Z"}
-      - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",      required: true }
+      - { name: "slug",   label: "ファイル名",  widget: "datetime",                   required: true, format: "HHmmss", dateFormat: false, timeFormat: "HH:mm:ss Z" }
       - { name: "ads",    label: "広告" ,       widget: "boolean",  default: true,    required: true }
       - { name: "fixme",  label: "要修正",      widget: "boolean",  default: false,   required: true }
       - { name: "body",   label: "本文",        widget: "markdown", default: "",      required: true, buttons: [] }
@@ -61,6 +66,8 @@ collections:
     format: "yaml-frontmatter"
     extension: "md"
     slug: "{{slug}}"
+    create: true
+    delete: false
     fields:
       - { name: "type",   label: "種類",        widget: "hidden",   default: "notes", required: true }
       - { name: "title",  label: "タイトル",    widget: "string",   default: "",      required: true } 
@@ -78,12 +85,14 @@ collections:
     format: "yaml-frontmatter"
     extension: "md"
     slug: "{{slug}}"
+    create: true
+    delete: false
     fields:
       - { name: "type",   label: "種類",        widget: "hidden",   default: "bookmarks", required: true }
       - { name: "title",  label: "タイトル",    widget: "querystring", query: "title",    required: true } 
       - { name: "link",   label: "URL",         widget: "querystring", query: "url",      required: true }
       - { name: "date",   label: "日付け",      widget: "datetime",                       required: true, format: "YYYY-MM-DDTHH:mm:ssZ", dateFormat: "YYYY-MM-DD", timeFormat: "HH:mm:ss Z"}
-      - { name: "slug",   label: "ファイル名",  widget: "string",   default: "",          required: true }
+      - { name: "slug",   label: "ファイル名",  widget: "datetime",                       required: true, format: "HHmmss", dateFormat: false, timeFormat: "HH:mm:ss Z" }
       - { name: "tags",   label: "タグ",        widget: "list",     default: [],          required: true }
       - { name: "ads",    label: "広告" ,       widget: "boolean",  default: true,        required: true }
       - { name: "fixme",  label: "要修正",      widget: "boolean",  default: false,       required: true }
