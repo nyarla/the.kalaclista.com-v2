@@ -6,7 +6,7 @@
   </head>
   <body>
     {{ partial "shared/header.html.html" . }}
-
+    {{ partial "shared/adsense.html.html" .Site.Params.adsense.top }}
     {{ define "post" }}
     <article class="post" data-edit-protocol="kalaclista:posts/{{ .File.Path }}" data-edit-label="{{ .Title }}">
       <p class="date">

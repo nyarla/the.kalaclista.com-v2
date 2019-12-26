@@ -6,6 +6,7 @@
   </head>
   <body>
     {{ partial "shared/header.html.html" . }}
+    {{ partial "shared/adsense.html.html" .Site.Params.adsense.top }}
 
     {{ define "echo" }}
     <article class="echo post" data-edit-protocol="kalaclista:echos/{{ .File.Path }}" data-edit-label="{{ .Title }}">
