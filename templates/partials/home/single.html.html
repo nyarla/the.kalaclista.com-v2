@@ -17,7 +17,7 @@
           {{ $displayed := false }}
           {{ $key := printf "%04d-%02d" $year $month }}
           {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
-            {{ if isset (index $.Site.Data.index $section).archives $key }}
+            {{ if (ne (len (default (slice) (index (index $.Site.Data.index $section).archives $key))) 0) }}
               {{ if not $displayed }}
                 <h1>{{ printf "%04d年%d月" $year $month }}</h1>
                 {{ $displayed = true }}
