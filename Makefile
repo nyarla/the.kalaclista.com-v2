@@ -1,154 +1,51 @@
-.PHONY: all clean fixup _build_config _build_dist _build_archives
+.PHONY: clean config archives \
+	website http https preview build \
+	live up upload deploy upload-via-aws-codebuild deploy-via-aws-codebuild
 
-all:
-	@echo stub
+all: push
+	@echo done.
 
 clean:
 	rm -rf dist
 	rm -rf src/home/data/*
 
-fixup:
-	find src -type f -name '*.md' | grep -v '_index.md' \
-		| xargs -I{} perl scripts/fixup-entries.pl {};
+config:
+	ls src \
+		| xargs -I{} -P5 bash -c 'cat config/global.yaml config/{}.yaml >src/{}/config.yaml'
 
-_build_config:
-	cat config/global.yaml config/$(WEBSITE).yaml >src/$(WEBSITE)/config.yaml
+archives:
+	echo bookmarks echos posts | tr ' ' "\n" \
+		| xargs -I{} -P3 find src/{}/content -type d \
+		| grep -P '\d+' \
+		| sed 's!$$!/_index.md!' \
+		| xargs -I{} -P8 \
+			bash -c 'export ns=$$(echo {} | sed "s!src/\([^/]\+\)/.\+!\1!"); echo -e "---\ntype: $$ns\n---\n" >{}'
 
-_build_dist:
-	cd src/$(WEBSITE) && hugo --quiet -d ../../dist/$(PROTO)/$(WEBSITE) -b "$(PROTO)://$(HOST)/$(WEBSITE)" --minify && cd ../../
+website:
+	echo notes bookmarks echos posts | tr ' ' "\n" \
+		| xargs -I{} -P4 \
+			bash -c 'cd src/{}; hugo --quiet -d ../../dist/$(PROTO)/{} -b "$(PROTO)://$(HOST)/{}" --minify'
+	echo notes bookmarks echos posts | tr ' ' "\n" \
+		| xargs -I{} -P4 \
+			bash -c 'cd dist/$(PROTO)/{}; mkdir -p ../../../src/home/data/index; mv jsonindex.json ../../../src/home/data/index/{}.json'
+	echo notes bookmarks echos posts | tr ' ' "\n" \
+		| xargs -I{} -P4 \
+			bash -c 'cd dist/$(PROTO)/{}; mkdir -p ../../../src/home/data/feed; cp jsonfeed.json ../../../src/home/data/feed/{}.json'
+	cd src/home && hugo --quiet -d ../../dist/$(PROTO) -b "$(PROTO)://$(HOST)" --minify
+	cp -r static/* dist/$(PROTO)/
 
-_build_archives:
-	cd src/$(WEBSITE)/content \
-		&& find . -type d 			\
-		| sed "s!\./\?!!g" 			\
-		| grep -vP "^$$" 				\
-		| xargs -P8 -I{} sh -c 'test -e "{}/_index.md" || perl -e "print qq{---\ntype: $(WEBSITE)\ndate: @{[ join q{-}, (split qr{/}, q[{}]) ]}\n---\n\n}" >{}/_index.md' 
+http:
+	env NODE_ENV=production ENABLE_AMAZON=0 $(MAKE) website PROTO=http HOST=kalaclista.com
 
-.PHONY: build-bookmarks-prepare build-bookmarks-http build-bookmarks-https preview-bookmarks check-bookmarks
+https:
+	env NODE_ENV=production ENABLE_AMAZON=1 $(MAKE) website PROTO=https HOST=the.kalaclista.com
 
-build-bookmarks-prepare:
-	@$(MAKE) WEBSITE=bookmarks _build_config
-	@$(MAKE) WEBSITE=bookmarks _build_archives
+preview: clean config archives
+	env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) website PROTO=http HOST=localhost:1313
 
-build-bookmarks-https:
-	@env NODE_ENV=production ENABLE_AMAZON=1 $(MAKE) WEBSITE=bookmarks PROTO=https HOST=the.kalaclista.com _build_dist
-
-build-bookmarks-http:
-	@env NODE_ENV=production ENABLE_AMAZON=0 $(MAKE) WEBSITE=bookmarks PROTO=http HOST=kalaclista.com _build_dist
-
-build-bookmarks: build-bookmarks-prepare
-	@$(MAKE) build-bookmarks-http build-bookmarks-https
-
-preview-bookmarks: build-bookmarks-prepare
-	@env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) WEBSITE=bookmarks PROTO=http HOST=localhost:1313 _build_dist
-
-check-bookmarks:
-	@pt -N --nogroup '  - ' src/bookmarks/content | cut -d: -f2 \
-		| sed 's/  - //' | grep -vP "[^a-zA-Z0-9\-]+" | sort | uniq
-
-.PHONY: build-echos-prepare build-echos-http build-echos-https preview-echos 
-
-build-echos-prepare:
-	@$(MAKE) WEBSITE=echos _build_config
-	@$(MAKE) WEBSITE=echos _build_archives
-
-build-echos-https:
-	@env NODE_ENV=production ENABLE_AMAZON=1 $(MAKE) WEBSITE=echos PROTO=https HOST=the.kalaclista.com _build_dist
-
-build-echos-http:
-	@env NODE_ENV=production ENABLE_AMAZON=0 $(MAKE) WEBSITE=echos PROTO=http HOST=kalaclista.com _build_dist
-
-build-echos: build-echos-prepare
-	@$(MAKE) build-echos-http build-echos-https
-
-preview-echos: build-echos-prepare
-	@env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) WEBSITE=echos PROTO=http HOST=localhost:1313 _build_dist
-
-
-.PHONY: build-notes-prepare build-notes-http build-notes-https preview-notes 
-
-build-notes-prepare:
-	@$(MAKE) WEBSITE=notes _build_config
-	@$(MAKE) WEBSITE=notes _build_archives
-
-build-notes-https:
-	@env NODE_ENV=production ENABLE_AMAZON=1 $(MAKE) WEBSITE=notes PROTO=https HOST=the.kalaclista.com _build_dist
-
-build-notes-http:
-	@env NODE_ENV=production ENABLE_AMAZON=0 $(MAKE) WEBSITE=notes PROTO=http HOST=kalaclista.com _build_dist
-
-build-notes: build-notes-prepare
-	@$(MAKE) build-notes-http build-notes-https
-
-preview-notes: build-notes-prepare
-	@env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) WEBSITE=notes PROTO=http HOST=localhost:1313 _build_dist
-
-.PHONY: build-posts-prepare build-posts-http build-posts-https preview-posts check-posts 
-
-build-posts-prepare:
-	@$(MAKE) WEBSITE=posts _build_config
-	@$(MAKE) WEBSITE=posts _build_archives
-
-build-posts-https:
-	@env NODE_ENV=production ENABLE_AMAZON=1 $(MAKE) WEBSITE=posts PROTO=https HOST=the.kalaclista.com _build_dist
-
-build-posts-http:
-	@env NODE_ENV=production ENABLE_AMAZON=0 $(MAKE) WEBSITE=posts PROTO=http HOST=kalaclista.com _build_dist
-
-build-posts: build-posts-prepare
-	@$(MAKE) build-posts-http build-posts-https
-
-preview-posts: build-posts-prepare
-	@env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) WEBSITE=posts PROTO=http HOST=localhost:1313 _build_dist
-
-check-posts:
-	@pt -N --nogroup '  - ' src/posts/content | cut -d: -f2 \
-		| sed 's/  - //' | grep -vP "[^a-zA-Z0-9\-]+" | sort | uniq
-
-.PHONY: build-home-prepare-data build-home-prepare build-home-http build-home-https build-home preview-home
-
-build-home-prepare-data:
-	@cp dist/$(PROTO)/$(WEBSITE)/jsonfeed.json src/home/data/feed/$(WEBSITE).json
-	@mv dist/$(PROTO)/$(WEBSITE)/jsonindex.json src/home/data/index/$(WEBSITE).json
-
-build-home-prepare:
-	@test -d src/home/data/index || mkdir -p src/home/data/index
-	@test -d src/home/data/feed || mkdir -p src/home/data/feed
-	@echo "posts echos notes bookmarks" \
-			| tr " " "\n" \
-			| xargs -P8 -I{} $(MAKE) PROTO=$(PROTO) WEBSITE={} build-home-prepare-data
-	@$(MAKE) WEBSITE=home _build_config
-
-build-home-http:
-	@$(MAKE) PROTO=http build-home-prepare
-	cd src/$(WEBSITE) && env NODE_ENV=production ENABLE_AMAZON=0 hugo --quiet -d ../../dist/http -b "http://kalaclista.com" --minify && cd ../../
-
-build-home-https:
-	@$(MAKE) PROTO=https build-home-prepare
-	cd src/$(WEBSITE) && env NODE_ENV=production ENABLE_AMAZON=1 hugo --quiet -d ../../dist/https -b "https://the.kalaclista.com" --minify && cd ../../
-
-build-home:
-	@$(MAKE) WEBSITE=home build-home-http
-	@$(MAKE) WEBSITE=home build-home-https
-	@cp -r static/* dist/http/
-	@cp -r static/* dist/https/
-
-preview-home:
-	@$(MAKE) PROTO=http build-home-prepare
-	cd src/home && env NODE_ENV=development ENABLE_AMAZON=0 hugo --quiet -d ../../dist/http -b "http://localhost:1313" --minify && cd ../../
-	@cp -r static/* dist/http/
-
-build: clean
-	@$(MAKE) -j8 build-bookmarks build-echos build-notes build-posts
-	@$(MAKE) build-home
-
-build-via-aws-codebuild: clean
-	@$(MAKE) -j8 build-bookmarks build-echos build-notes build-posts
-	@$(MAKE) build-home
-
-preview: clean	
-	@$(MAKE) -j8 preview-bookmarks preview-echos preview-notes preview-posts
-	@$(MAKE) preview-home
+build: clean config archives
+	echo http https | tr ' ' "\n" \
+		| xargs -I{} -P2 $(MAKE) {}
 
 live:
 	nix-shell --run "python3 -m http.server -d dist/http 1313" -p python3
@@ -157,23 +54,21 @@ up:
 	echo "." >.edit
 	tmux-up
 
-deploy-http:
-	rsync -e "ssh -p 57092 -i ~/.ssh/id_kalaclista.com" -rtOu --modify-window=1 --delete dist/http/ www-data@web.internal.nyarla.net:/data/dist/kalaclista.com/
-
-deploy-https:
-	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com" -rtOu --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
+upload:
+	rsync -e "ssh -p 57092 -i ~/.ssh/id_$(DOMAIN)" \
+		-rtOu --modify-window=1 --delete dist/$(PROTO)/ www-data@web.internal.nyarla.net:/data/dist/$(DOMAIN)/
 
 deploy:
-	@$(MAKE) -j8 deploy-http deploy-https
+	echo kalaclista.com the.kalaclista.com | tr ' ' "\n" \
+		| xargs -I{} -P2 bash -c 'make upload DOMAIN={} PROTO=$$(bash -c "test {} = kalaclista.com && echo http || echo https")'
+
+upload-via-aws-codebuild:
+	rsync -e "ssh -p 57092 -i ~/.ssh/id_$(DOMAIN) -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+		-rtOu --modify-window=1 --delete dist/http/ www-data@web.internal.nyarla.net:/data/dist/$(DOMAIN)/
 
 deploy-via-aws-codebuild:
-	@$(MAKE) -j8 deploy-http-via-aws-codebuild deploy-https-via-aws-codebuild
-
-deploy-http-via-aws-codebuild:
-	rsync -e "ssh -p 57092 -i ~/.ssh/id_kalaclista.com -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -rtOu --modify-window=1 --delete dist/http/  www-data@web.internal.nyarla.net:/data/dist/kalaclista.com/
-
-deploy-https-via-aws-codebuild:
-	rsync -e "ssh -p 57092 -i ~/.ssh/id_the.kalaclista.com -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -rtOu --modify-window=1 --delete dist/https/ www-data@web.internal.nyarla.net:/data/dist/the.kalaclista.com/
+	echo kalaclista.com the.kalaclista.com | tr ' ' "\n" \
+		| xargs -I{} -P2 $(MAKE) upload-via-aws-codebuild DOMAIN={}
 
 pull:
 	cd src && git pull origin master && cd ../
