@@ -19,7 +19,7 @@
   </h1>
   
   {{ $msg := "default" }}
-  {{ if isset .Site.Params.message $meta.website }}
+  {{ with (index .Site.Params.message $meta.website) }}
     {{ $msg = $meta.website }}
   {{ end }}
 

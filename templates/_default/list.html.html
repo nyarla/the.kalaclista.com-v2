@@ -27,11 +27,13 @@
         {{ if not $date.isDate }}
           {{ range $year := seq (now.Year) (-1) (add now.Year (-1)) }}
             {{ $key := printf "%04d" $year }}
-            {{ if isset (index (index $.Site.Data $proto).index $meta.website).entries $key }}
-              {{ $list = $list | append (index (index (index $.Site.Data $proto).index $meta.website).entries $key) }}
-              {{ if ne $meta.website "notes" }}
-                {{ $list = first 15 $list }}
-                {{ $next = 2 }}
+            {{ with (index (index $.Site.Data $proto).index $meta.website).entries }}
+              {{ with (index . $key) }}
+                {{ $list = $list | append . }}
+                {{ if ne $meta.website "notes" }}
+                  {{ $list = first 15 $list }}
+                  {{ $next = 2 }}
+                {{ end }}
               {{ end }}
             {{ end }}
           {{ end }}
@@ -42,8 +44,10 @@
           {{ else if $date.hasMonth }}
             {{ $key = printf "%s-%s" $date.year $date.month }}
           {{ end }}
-          {{ if isset (index (index .Site.Data $proto).index $meta.website).entries $key }}
-            {{ $list = (index (index (index .Site.Data $proto).index $meta.website).entries $key) }}
+          {{ with (index (index .Site.Data $proto).index $meta.website).entries }}
+            {{ with (index . $key) }} 
+              {{ $list = . }}
+            {{ end }}
           {{ end }}
         {{ end }}
       {{ end }}
