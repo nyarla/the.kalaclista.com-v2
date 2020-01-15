@@ -40,9 +40,9 @@
         {{ else }}
           {{ $key := $date.year }}
           {{ if $date.hasDay }}
-            {{ $key = printf "%s-%s-%s" $date.year $date.month $date.day }}
+            {{ $key = printf "%04d-%02d-%02d" (int $date.year) (int $date.month) (int $date.day) }}
           {{ else if $date.hasMonth }}
-            {{ $key = printf "%s-%s" $date.year $date.month }}
+            {{ $key = printf "%04d-%02d" (int $date.year) (int $date.month) }}
           {{ end }}
           {{ with (index (index .Site.Data $proto).index $meta.website).entries }}
             {{ with (index . $key) }} 
