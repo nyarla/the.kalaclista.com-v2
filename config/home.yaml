@@ -1,14 +1,4 @@
   website: home 
-  title: ""
-  description: "『輝かしい青春』なんて失かった方の<br>『にゃるら』の個人 Webサイトです"
-  search:
-    title: "サーチ"
-    description: "『輝かしい青春』なんて失かった方の<br>『にゃるら』の個人 Webサイトを検索します"
-    message: "とは言え、検索だけでは<br>見付からない記事なども有るかもしれません。"
-  404:
-    title: "イズ・ノット・ファウンド"
-    description: "いわゆる 404 Not Found 。<br>ページが見付かりません"
-    message: "記事が行方不明になっててすみません。<br>検索するともしかすると見付かるかもです"
 
 # Title
 title: "カラクリスタ"

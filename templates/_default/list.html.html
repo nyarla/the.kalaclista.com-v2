@@ -1,1 +1,143 @@
-{{ partial (printf "%s/list.html.html" .Site.Params.website) . }}
+<!doctype html>
+<html lang="ja">
+  <head prefix="og: http://ogp.me/ns# website: http://ogp.me/ns/website#">
+    {{ partial "components/meta.html.html" . }}
+  </head>
+  <body>
+    {{ partial "components/header.html.html" . }}
+    {{ $meta := partial "components/jsonmeta.html.html" . | unmarshal }}
+
+    {{ $list := slice }}
+    {{ $proto := "https" }}
+    {{ if ne (len (findRE "^http://" (absURL "/"))) 0 }}
+      {{ $proto = "http" }}
+    {{ end }}
+
+    {{ $next := 0 }}
+    {{ $prev := 0 }}
+
+    {{ if eq .Site.Params.website "home" }}
+      {{ if .Page.IsHome }}
+        {{ range $section := slice "posts" "echos" "notes" "bookmarks" }} 
+          {{ $list = $list | append (index (index $.Site.Data $proto).feed $section).items }}
+        {{ end }}
+        {{ $list = first 15 (sort $list "date" "desc" )}}
+      {{ else }}
+        {{ $date := partial "functions/parsedate.html.html" $.Page.File.Dir | unmarshal }}
+        {{ if not $date.isDate }}
+          {{ range $year := seq (now.Year) (-1) (add now.Year (-1)) }}
+            {{ $key := printf "%04d" $year }}
+            {{ if isset (index (index $.Site.Data $proto).index $meta.website).entries $key }}
+              {{ $list = $list | append (index (index (index $.Site.Data $proto).index $meta.website).entries $key) }}
+              {{ if ne $meta.website "notes" }}
+                {{ $list = first 15 $list }}
+                {{ $next = 2 }}
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        {{ else }}
+          {{ $key := $date.year }}
+          {{ if $date.hasDay }}
+            {{ $key = printf "%s-%s-%s" $date.year $date.month $date.day }}
+          {{ else if $date.hasMonth }}
+            {{ $key = printf "%s-%s" $date.year $date.month }}
+          {{ end }}
+          {{ if isset (index (index .Site.Data $proto).index $meta.website).entries $key }}
+            {{ $list = (index (index (index .Site.Data $proto).index $meta.website).entries $key) }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ else }}
+      {{ $pages := slice }}
+      {{ if (and .Page.IsHome (ne $meta.website "notes")) }}
+        {{ $pager := .Paginate .Site.RegularPages.ByDate.Reverse }}
+        {{ $pages = $pager.Pages }}
+        {{ if $pager.HasNext }}
+          {{ $next = $pager.Next.PageNumber }}
+        {{ end }}
+        {{ if $pager.HasPrev }}
+          {{ $prev = $pager.Prev.PageNumber }}
+        {{ end }}
+      {{ else }}
+        {{ $pages = .Pages.ByDate.Reverse }}
+      {{ end }}
+      {{ range $page := $pages }}
+        {{ $data := partial "components/jsonpage.html.html" $page | unmarshal }}
+        {{ $data = merge (dict "path" $page.Path) $data }}
+        {{ $list = $list | append $data }}
+      {{ end }}
+    {{ end }}
+
+    {{ $count := 0 }}
+    {{ $displayed := 0 }}
+    {{ if ne (len $list) 0 }}
+    <main id="{{ $meta.website }}">
+    {{ if and (eq $meta.website "home") .Page.IsHome }}
+      <h1>最近の更新</h1>
+    {{ end }}
+
+      {{ $before := dateFormat "2006-01-02" (index $list 0).date }}
+      {{ range $idx, $data := sort $list "date" "desc" }}
+        {{ $date := dateFormat "2006-01-02" $data.date }}
+        {{ $displayDate := (or (eq $idx 0) (ne $before $date)) }} 
+
+        {{ if $displayDate }}
+          {{ if and (lt $displayed 3) (gt $count 7) }}
+            {{ partial "components/adsense.html.html" $.Site.Params.adsense.top }}
+            {{ $displayed = add $displayed 1 }}
+            {{ $count = 0 }}
+          {{ end }}
+          {{ if eq $meta.website "bookmarks" }}
+          <h1 class="date">
+            <a href="{{ absURL (printf "/bookmarks/%s/" (dateFormat "2006/01/02" $date)) }}">
+              <time datetime="{{ dateFormat "2006-01-02" $date }}">
+                {{ dateFormat "2006年1月2日" $date }}
+              </time>
+            </a>
+          </h1>
+          {{ end }}
+        {{ end }}
+        
+        {{ $type := "summary" }}
+        {{ if eq $meta.website "home" }}
+          {{ if findRE "/bookmarks/" $data.url }} 
+            {{ $type = "bookmark" }}
+          {{ else }}
+            {{ $type = "summary" }}
+          {{ end }}
+        {{ else if eq $meta.website "bookmarks" }}
+          {{ $type = "bookmark" }}
+        {{ else if eq $meta.website "echos"}}
+          {{ $type = "echo" }}
+        {{ end }}
+
+        {{ partial "components/blocks.html.html" (slice $data $type) }}
+
+        {{ $before = $date }}
+        {{ $count = add $count 1 }}
+      {{ end }}
+
+      {{ if and (eq $meta.website "home") .Page.IsHome }}
+      <p><a href="{{ absURL "/archives/" }}">すべての過去ログ</a></p>
+      {{ end }}
+
+      {{ if or (ne $next 0) (ne $prev 0) }}
+        <nav class="pagination">
+          {{ if ne $prev 0 }}
+          <a href="{{ absURL (printf "/%s/pages/%d/" $meta.website $prev) }}">前</a>
+          {{ end }}
+
+          {{ if ne $next 0 }}
+          <a href="{{ absURL (printf "/%s/pages/%d/" $meta.website $next) }}">次</a>
+          {{ end }}
+        </nav>
+      {{ end }}
+    </main>
+    {{ end }}
+
+    {{ if lt $displayed 3 }}
+      {{ partial "components/adsense.html.html" .Site.Params.adsense.bottom }}
+    {{ end }}
+    {{ partial "components/footer.html.html" . }}
+  </body>
+</html>

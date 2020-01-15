@@ -1,0 +1,96 @@
+{{ $meta := partial "components/jsonmeta.html.html" . | unmarshal }}
+
+<header id="navigation">
+  <a href="{{ absURL "/nyarla/" }}" class="hexagon">
+    <img  src="{{ absURL "/assets/avatar.svg" }}"
+          alt="&#x1f441;" height="48" width="48">
+  </a>
+
+  <h1 id="title">
+    <a href="{{ absURL "/" }}">カラクリスタ</a>
+    {{ if ne $meta.website "home" }}
+      <span>・</span>
+      {{ if ne $meta.website "notfound" }}
+        <a href="{{ absURL (printf "/%s/" $meta.website) }}">{{ index .Site.Params.title $meta.website }}</a>
+      {{ else }}
+        <strong>{{ index .Site.Params.title $meta.website }}</strong>
+      {{ end }}
+    {{ end }}
+  </h1>
+  
+  {{ $msg := "default" }}
+  {{ if isset .Site.Params.message $meta.website }}
+    {{ $msg = $meta.website }}
+  {{ end }}
+
+  <p id="description">{{ index .Site.Params.description $meta.website | markdownify }}</p>
+  <p id="message">{{ index .Site.Params.message $msg | markdownify }}</p>
+
+  <nav>
+    {{ range $ns := slice "home" "posts" "echos" "notes" "bookmarks" "search" "archives" }}
+      {{ $link := "/" }}
+      {{ if ne $ns "home" }}
+        {{ $link = printf "/%s/" $ns }}
+      {{ end }}
+
+      {{ $current := false }}
+      {{ if eq $ns $meta.website }}
+        {{ $current = true }}
+      {{ end }}
+      <a href="{{ absURL $link }}" {{ if $current }}class="current"{{ end }}>{{ index $.Site.Params.labels $ns }}</a>
+    {{ end }}
+    <a href="https://twitter.com/kalaclista">小鳥</a>
+    <a href="https://note.com/kalaclista">日記</a>
+  </nav>
+</header>
+
+{{ if (and .Page.IsPage (default false .Page.Params.fixme)) }}
+<aside id="fixme" class="content">
+  <h1>FIXME</h1>
+  <p>
+    この記事はこの Webサイトが辿った過去の様々な歴史的経緯により、
+    表示の崩れなどの修正や補修が必要とされている記事です。
+  </p>
+  <p>
+    しかしながらこの記事には、表示の崩れなどがそのまま残っていたりする可能性が有り、
+    また確認や修正などの補修が間に合っていないため、現状のままとなっています。
+  </p>
+  <p>
+    そのためこちらとしてもなるべく修正する様に心掛けていますが、
+    現状ありのままに記事の崩れなどが原因で読み辛い場合も有り得ますので、
+    その点はご了承ください。
+  </p>
+</aside>
+{{ end }}
+
+{{ if ne $meta.website "notfound" }}
+
+{{ if (not (hasPrefix .Site.BaseURL "https")) }}
+{{ $link := printf "https://the.kalaclista.com%s" .Page.RelPermalink }}
+{{ $label := $link }}
+
+{{ if (eq $meta.website "notes") }}
+  {{ if .Page.IsPage }}
+    {{ $label = replace (printf "https://the.kalaclista.com/notes/%s/" .Page.Params.slug) " " "-" }}
+  {{ else }}
+    {{ $label = "https://the.kalaclista.com/notes/" }}
+  {{ end }}
+{{ end }}
+
+<aside id="note" class="content">
+  <h1>NOTE</h1>
+  <p>
+    このページは諸事情で暗号化通信（HTTP with TLS）を用いていないページとして提供されており、
+    本来の暗号化通信で提供されるページは次の通りです：
+  </p>
+  <ul>
+    <li><a href="{{ $link }}">{{ $label }}</a></li>
+  </ul>
+  <p>
+    そのため次回のアクセス時やブックマークの際には、
+    上記の HTTP with TLS （https）で提供される URL をご利用ください。
+  </p>
+</aside>
+{{ end }}
+
+{{ end }}

@@ -1,0 +1,30 @@
+{{ $author := dict "name" "OKAMURA Naoki" }}
+{{ $author = merge (dict "url" "https://the.kalaclista.com/nyarla") $author }}
+{{ $author = merge (dict "avatar" "https://the.kalaclista.com/assets/avatar.svg") $author }}
+
+{{ $proto := "https" }}
+{{ if ne (len (findRE "^http://" (absURL "/"))) 0 }}
+  {{ $proto = "http" }}
+{{ end }}
+
+{{ $feed := dict "version" "https://jsonfeed.org/version/1" }}
+{{ $feed = merge (dict "title" .Site.Title) $feed }}
+{{ $feed = merge (dict "description" (replace (index .Site.Params.description .Site.Params.website ) "<br>" "")) $feed }}
+{{ $feed = merge (dict "home_page_url" (absURL (printf "/%s/" .Site.Params.website))) $feed }}
+{{ $feed = merge (dict "feed_url" (absURL "/%s/jsonfeed.json")) $feed }}
+{{ $feed = merge (dict "icon" (absURL "/apple-touch-icon.png")) $feed }}
+{{ $feed = merge (dict "author" $author) $feed }}
+
+{{ $pages := slice }}
+
+{{ if ne .Site.Params.website "home" }}
+  {{ range $src := first 10 .Site.RegularPages.ByDate.Reverse }}
+    {{ $pages = $pages | append (partial "components/jsonpage.html.html" $src | unmarshal) }}
+  {{ end }}
+{{ else }}
+  {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
+    {{ $pages = $pages | append (index (index $.Site.Data $proto).feed $section).items }}
+  {{ end }}
+{{ end }}
+
+{{ merge (dict "items" (sort $pages "date" "desc")) $feed | jsonify }}

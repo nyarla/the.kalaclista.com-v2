@@ -4,30 +4,43 @@
     <title>{{ .Site.Title }}</title>
     <link>{{ .Permalink }}</link>
     <description>
-      {{ replace .Site.Params.description "<br>" "" }}
+      {{ replace (index .Site.Params.description .Site.Params.website) "<br>" "" }}
     </description>
     <generator>Hugo - https://gohugo.io/</generator>
     <language>ja-JP</language>
     <managingEditor>OKAMURA Naoki a.k.a nyarla</managingEditor>
     <webMaster>OKAMURA Naoki a.k.a nyarla</webMaster>
-    <copyright>(c) 2006-2019 OKAMURA Naoki a.k.a nyarla</copyright>
-    <atom:link href="{{ .Permalink }}" rel="serlf" type="application/rss+xml"/>
+    <copyright>(c) 2006-2020 OKAMURA Naoki a.k.a nyarla</copyright>
+    <atom:link href="{{ .Permalink }}" rel="self" type="application/rss+xml"/>
     <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700"  }}</lastBuildDate>
 
-    {{ if eq .Site.Params.website "home" }}
-    {{ $pages := slice }}
-    {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
 
-    {{ range $page := (index $.Site.Data.feed $section).items }}
-      {{ $page = merge $page (dict "type" $section) }}
-      {{ $pages = append (slice $page) $pages }}
+    {{ $pages := slice }}
+
+    {{ $proto := "https" }}
+    {{ if ne (len (findRE "^http://" (absURL "/"))) 0 }}
+      {{ $proto = "http" }}
     {{ end }}
 
+    {{ if eq .Site.Params.website "home" }}
+      {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
+        {{ range $page := (index (index $.Site.Data $proto).feed $section).items }}
+          {{ $pages = $pages | append (merge (dict "type" $section) $page)}}
+        {{ end }}
+      {{ end }}
+    {{ else }}
+      {{ range $page := first 10 .Site.RegularPages.ByDate.Reverse }}
+        {{ $pages = $pages | append (partial "components/jsonpage.html.html" $page | unmarshal)}}
+      {{ end }}
     {{ end }}
 
     {{ range $page := sort $pages "date" "desc" }}
     <item>
+      {{ if eq $.Site.Params.website "home" }}
+      <title>{{ $page.title }}（{{ index $.Site.Params.labels $page.type}}）</title>
+      {{ else }}
       <title>{{ $page.title }}</title>
+        {{ end }}
       <link>{{ $page.url }}</link>
       <pubDate>{{ dateFormat "Mon, 02 Jan 2006 15:04:05 -0700" $page.date }}</pubDate>
       <author>OKAMURA Naoki a.k.a nyarla nyarla@kalaclista.com</author>
@@ -36,25 +49,6 @@
         {{ $page.content_html | html }}
       </description>
     </item>
-    {{ end }}
-    {{ else }}
-
-    {{ range $page := first 10 .Site.RegularPages.ByDate.Reverse }}
-    {{ $permalink := $page.Permalink }}
-    {{ if eq .Site.Params.website "bookmarks" }}
-      {{ $permalink = replaceRE "(\\d{6})/$" "#$1" $permalink }}
-    {{ end }}
-    <item>
-      <title>{{ $page.Title }}</title>
-      <link>{{ $permalink }}</link>
-      <pubDate>{{ $page.Date.Format "Mon, 02 Jan 2006 15:04:05 -0700"  }}</pubDate>
-      <author>OKAMURA Naoki a.k.a nyarla nyarla@kalaclista.com</author>
-      <guid>{{  $permalink }}</guid>
-      <description>
-        {{ partial "functions/markup.html.html" $page.Content | html }}
-      </description>
-    </item>
-    {{ end }}
     {{ end }}
   </channel>
 </rss>

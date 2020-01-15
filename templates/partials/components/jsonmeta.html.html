@@ -1,0 +1,78 @@
+{{ $data := dict }}
+
+{{ if eq .Site.Params.website "home" }}
+  {{ if .Page.IsHome }}
+    {{ $data = merge (dict "website" "home") $data }}
+    {{ $data = merge (dict "title" .Site.Title) $data }}
+    {{ $data = merge (dict "site" .Site.Title) $data }}
+    {{ $data = merge (dict "description" (replace (index .Site.Params.description .Site.Params.website) "<br>" "")) $data }}
+    {{ $data = merge (dict "type" "website") $data }}
+  {{ else if eq .Page.Kind "404" }}
+    {{ $data = merge (dict "website" "notfound") $data }}
+    {{ $data = merge (dict "title" (printf "%s・%s" .Site.Title .Site.Params.title.notfound)) $data }}
+    {{ $data = merge (dict "site" $data.title) $data }}
+    {{ $data = merge (dict "description" (replace .Site.Params.description.notfound "<br>" "")) $data }}
+    {{ $data = merge (dict "type" "website") $data }}
+  {{ else if .Page.IsPage }}
+    {{ if eq .Page.File.BaseFileName "search" }}
+      {{ $data = merge (dict "website" "search") $data }}
+      {{ $data = merge (dict "title" (printf "%s・%s" .Site.Title .Site.Params.title.search)) $data }}
+      {{ $data = merge (dict "site" $data.title) $data }}
+      {{ $data = merge (dict "description" (replace .Site.Params.description.search "<br>" "")) $data }}
+      {{ $data = merge (dict "type" "website") $data }}
+    {{ else if eq .Page.File.BaseFileName "archives" }}
+      {{ $data = merge (dict "website" "archives") $data }}
+      {{ $data = merge (dict "title" (printf "%s・%s" .Site.Title .Site.Params.title.archives)) $data}}
+      {{ $data = merge (dict "site" $data.title) $data }}
+      {{ $data = merge (dict "description" (replace .Site.Params.description.archives "<br>" "")) $data }}
+      {{ $data = merge (dict "type" "website") $data }}
+    {{ else }}
+      {{ $data = merge (dict "website" "home") $data }}
+      {{ $data = merge (dict "title" .Page.Title) $data }}
+      {{ $data = merge (dict "site" .Site.Title) $data }}
+      {{ $data = merge (dict "description" (partial "functions/content.html.html" .Content | unmarshal).summary) $data }}
+      {{ $data = merge (dict "type" "article") $data }}
+    {{ end }}
+  {{ else }}
+    {{ $data = merge (dict "website" .Page.FirstSection.Section) $data }}
+
+    {{ if gt (len (findRE "\\d{4}" .Page.RelPermalink)) 0 }} 
+      {{ $data = merge (dict "title" (printf "%sの%s" (partial "functions/datelabel.html.html" .Page.File.Dir | unmarshal).label (index .Site.Params.labels $data.website))) $data }}
+      {{ $data = merge (dict "site" (printf "%s・%s" .Site.Title (index .Site.Params.title $data.website))) $data }}
+      {{ $data = merge (dict "description" (printf "%s一覧" $data.title)) $data }}
+      {{ $data = merge (dict "type" "website") $data }}
+    {{ else }}
+      {{ $data = merge (dict "title" (printf "%s・%s" .Site.Title (index .Site.Params.title $data.website))) $data }}
+      {{ $data = merge (dict "site" $data.title) $data }}
+      {{ $data = merge (dict "description" (replace (index .Site.Params.description $data.website) "<br>" "")) $data }}
+      {{ $data = merge (dict "type" "website") $data }}
+    {{ end }}
+  {{ end }}
+{{ else }}
+  {{ $data = merge (dict "website" .Site.Params.website) $data }}
+  {{ if and .Page.IsPage (ne $data.website "bookmarks") }}
+    {{ $data = merge (dict "title" .Page.Title) $data }}
+    {{ $data = merge (dict "site" .Site.Title) $data }}
+    {{ $data = merge (dict "description" (partial "functions/content.html.html" .Content | unmarshal).summary) $data }}
+    {{ $data = merge (dict "type" "article") $data }}
+  {{ else if and (eq .Page.Section "tags") (or (eq $data.website "posts") (eq $data.website "bookmarks")) }}
+    {{ $data = merge (dict "title" (printf (index .Site.Params.tag .Site.Params.website) .Data.Term)) $data}} 
+    {{ $data = merge (dict "site" .Site.Title) $data }}
+    {{ $data = merge (dict "description" $data.title) $data }}
+    {{ $data = merge (dict "type" "website") $data}}
+  {{ else if .Page.IsHome }}
+    {{ $data = merge (dict "title" .Site.Title) $data }}
+    {{ $data = merge (dict "site" .Site.Title) $data }}
+    {{ $data = merge (dict "description" (replace (index .Site.Params.description $data.website) "<br>" "")) $data }}
+    {{ $data = merge (dict "type" "website") $data }}
+  {{ else }}
+    {{ $data = merge (dict "title" (printf "%sの%s" (partial "functions/datelabel.html.html" .Page.File.Dir) (index .Site.Params.labels $data.website))) $data }}
+    {{ $data = merge (dict "site" .Site.Title) $data }}
+    {{ $data = merge (dict "description" (printf "%s一覧" $data.title)) $data }}
+    {{ $data = merge (dict "type" "website") $data }}
+  {{ end }}
+{{ end }}
+
+{{ $data = merge (dict "url" .Page.Permalink) $data }}
+
+{{ $data | jsonify }}

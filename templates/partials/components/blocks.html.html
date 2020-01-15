@@ -1,0 +1,250 @@
+{{ define "bookmark" }}
+<article  class="bookmark"
+          {{ if .path }}
+          data-edit-protocol="kalaclista:bookmarks/{{ .path }}"
+          data-edit-label="{{ .title }}"
+          {{ end }}
+          >
+  <p class="date">
+    {{ if not .path }}
+    <a href="{{ absURL "/bookmarks/" }}">参照</a>
+    {{ end }}
+    <a href="{{ absURL (dateFormat "/bookmarks/2006/01/02/" .date) }}">
+        <time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}</time>
+    </a>
+  </p>
+  <h1 id="{{ dateFormat "150405" .date }}">
+    <a href="{{ .external_link }}">{{ .title }}</a>
+  </h1>
+  {{ if ne (len (default (slice) .tags)) 0 }}
+  <nav>
+    {{ range $tag := sort .tags }}
+    <a href="{{ absURL (printf "/bookmarks/tags/%s/" $tag) }}">{{ $tag }}</a>
+    {{ end }}
+  </nav>
+  {{ end }}
+  <section class="content">
+    {{ .content_html | safeHTML }}
+  </section>
+</article>
+{{ end }}
+
+{{ define "summary" }}
+  {{ $website := "posts" }}
+  {{ if findRE "/notes/" .url }}
+    {{ $website = "notes" }}
+  {{ end }}
+<article  class="summary"
+          {{ if .path }}
+          data-edit-protocol="{{ printf "kalaclista:%s/%s" $website .path }}"
+          data-edit-label="{{ .title }}"
+          {{ end }}
+          >
+  <p class="date">
+    {{ if not .path }}
+      {{ if eq $website "posts" }}
+      <a href="{{ absURL "/posts/" }}">記事</a>
+      {{ else }}
+      <a href="{{ absURL "/notes/" }}">覚書</a>
+      {{ end }}
+    {{ end }}
+    {{ if eq $website "notes" }}
+    <time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}</time>
+    {{ else }}
+    <a href="{{ absURL (dateFormat "/posts/2006/01/02/" .date) }}">
+      <time datetime="{{ dateFormat "2006-01-02" .date }}">
+        {{ dateFormat "2006年1月2日" .date }}
+      </time>
+    </a>
+    {{ end }}
+  </p>
+      <a href="{{ .url }}">
+        <h1>{{ .title }}</h1>
+        <p>{{ (partial "functions/content.html.html" .content_html | safeHTML | unmarshal).summary }}</p>
+      </a>
+    </article>
+{{ end }}
+
+{{ define "post" }}
+<article  class="post"
+          {{ if .path }}
+          data-edit-protocol="kalaclista:posts/{{ .path }}" data-edit-label="{{ .title }}"
+          {{ end }}
+          >
+  <p class="date">
+    <a href="{{ absURL (dateFormat "/posts/2006/01/02/" .date) }}">
+      <time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}</time>
+    </a>
+  </p>
+  <h1><a href="{{ .url }}">{{ .title }}</a></h1>
+ 
+  {{ with (default (slice) .tags) }}
+  {{ if ne (len .) 0 }}
+  <nav>
+    {{ range $tag := . }}
+    <a href="{{ absURL (printf "/posts/tags/%s/" $tag) }}">{{ $tag }}</a> 
+    {{ end }}
+  </nav>
+  {{ end }}
+  {{ end }}
+
+  <section class="content">
+    {{ .content_html | safeHTML }}
+  </section>
+
+  <p class="postedat">
+    <a href="https://the.kalaclista.com/nyarla/" class="hexagon">
+      <img src="{{ absURL "/assets/avatar.svg"}}" width="24" height="24" alt="nyarla">
+    </a>
+    が大体<time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}ぐらいに執筆</time></p>
+
+  <p class="comment"><a href="https://scrapbox.io/kalaclista/{{ .title }}">Scrapbox でコメントや意見を書く</a></p>
+</article>
+{{ end }}
+
+{{ define "note" }}
+ <article   class="note post"
+            {{ if .path }}
+            data-edit-protocol="kalaclista:notes/{{ .path }}" data-edit-label="{{ .title }}"
+            {{ end }}
+            >
+    <p class="date">
+      <time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}</time>
+    </p>
+    <h1><a href="{{ .url }}">{{ .title }}</a></h1>
+    <section class="content">
+      {{ .content_html | safeHTML }}
+    </section>
+    <p class="postedat">
+      <a href="https://the.kalaclista.com/nyarla/" class="hexagon">
+        <img  src="{{ absURL "/assets/avatar.svg" }}"
+              width="24"
+              height="24"
+              alt="nyarla">
+      </a>
+        が大体<time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}</time>に記述
+      </a>
+    </p>
+    <p class="comment">
+      <a href="https://scrapbox.io/kalaclista/{{ .title }}">Scrapbox でコメントや意見を書く</a>
+    </p>
+</article>
+{{ end }}
+
+{{ define "echo" }}
+<article  class="echo post"
+          {{ if .path }}
+          data-edit-protocol="kalaclista:echos/{{ .path }}"
+          data-edit-label="{{ .title }}"
+          {{ end }}
+          >
+  <p class="date">
+    <a href="{{ absURL (dateFormat "/echos/2006/01/02/" .date) }}">
+        <time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}</time>
+    </a>
+  </p>
+  <h1><a href="{{ .url }}">{{ .title }}</a></h1>
+  <section class="content">
+    {{ .content_html | safeHTML }}
+  </section>
+
+  <p class="postedat">
+    <a href="https://the.kalaclista.com/nyarla/" class="hexagon">
+      <img src="{{ absURL "/assets/avatar.svg"}}" width="24" height="24" alt="nyarla">
+    </a>
+    が大体<time datetime="{{ dateFormat "2006-01-02" .date}}">{{ dateFormat "2006年1月2日" .date }}ぐらいに投稿</time></p>
+
+  <p class="comment"><a href="https://scrapbox.io/kalaclista/{{ .title }}">Scrapbox でコメントや意見を書く</a></p>
+</article>
+{{ end }}
+
+{{ define "home" }}
+{{ $type := "" }}
+{{ if strings.HasSuffix .url "/nyarla/" }}
+  {{ $type = "profile" }}
+{{ else if strings.HasSuffix .url "/search/"  }}
+  {{ $type = "search" }}
+{{ else if strings.HasSuffix .url "/archives/"  }}
+  {{ $type = "archives" }}
+{{ end }}
+<article class="note post page {{ $type }}">
+  <h1><a href="{{ .url }}">{{ .title }}</a></h1>
+  <section class="content">
+    {{ if eq $type "search" }}
+      <nav>
+        <script async src='https://cse.google.com/cse.js?cx=partner-pub-1273544194033160:2995998151'></script>
+        <div class="gcse-search"></div>
+      </nav>
+    {{ else if ne $type "archives" }}
+      {{ .content_html | safeHTML }}
+    {{ else }}
+      {{ $data := . }}
+      {{ range $year := seq (now.Format "2006") (-1) (2006) }}
+        {{ range $month := seq (12) (-1) (1) }}
+          {{ $displayed := false }}
+          {{ $key := printf "%04d-%02d" $year $month }}
+          {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
+            {{ if ne (len (default (slice) (index (index $data.pages $section).entries $key) )) 0 }}
+              {{ if not $displayed }}
+                <h1>{{ printf "%04d年%d月" $year $month }}</h1>
+                {{ $displayed = true }}
+              {{ end }}
+              <h2>
+                {{ if ne $section "notes" }}
+                <a href="{{ absURL (printf "/%s/%04d/%02d/" $section $year $month) }}">
+                  {{ index $.labels $section }}
+                </a>
+                {{ else }}
+                  {{ index $data.labels $section }}
+                {{ end }}
+              </h2>
+
+              <ul>
+                {{ range $page := sort (index (index $data.pages $section).entries $key) "date" "desc" }}
+                <li><a href="{{ $page.permalink }}">{{ $page.title }}</a></li>
+                {{ end }}
+              </ul>
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+
+    {{ end }}
+  </section>
+</article>
+{{ end }}
+
+{{ $page := index . 0 }}
+{{ $type := index . 1 }}
+
+{{ if eq $type "summary" }}
+  {{ block "summary" $page }}{{ end }}
+{{ end }}
+
+{{ if eq $type "post" }}
+  {{ block "post" $page }}{{ end }}
+{{ end }}
+
+{{ if eq $type "echo" }}
+  {{ block "echo" $page }}{{ end }}
+{{ end }}
+
+{{ if eq $type "note" }}
+  {{ block "note" $page }}{{ end }}
+{{ end }}
+
+{{ if eq $type "bookmark" }}
+  {{ block "bookmark" $page }}{{ end }}
+{{ end }}
+
+{{ if eq $type "home" }}
+  {{ block "home" $page }}{{ end }}
+{{ end }}
+
+{{ if eq $type "search" }}
+  {{ block "home" $page }}{{ end }}
+{{ end }}
+
+{{ if eq $type "archives" }}
+  {{ block "home" $page }}{{ end }}
+{{ end }}

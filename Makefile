@@ -15,11 +15,15 @@ config:
 
 archives:
 	echo bookmarks echos posts | tr ' ' "\n" \
-		| xargs -I{} -P3 find src/{}/content -type d \
-		| grep -P '\d+' \
-		| sed 's!$$!/_index.md!' \
-		| xargs -I{} -P8 \
-			bash -c 'export ns=$$(echo {} | sed "s!src/\([^/]\+\)/.\+!\1!"); echo -e "---\ntype: $$ns\n---\n" >{}'
+		| xargs -I[] find src/[]/content -type d \
+		| grep -P '\d+' | sed 's!src/\([^/]\+\)/content/!src/home/content/\1/!' \
+		| xargs -I[] -P8 bash -c "test -e []/_index.md || (mkdir -p []; echo -e '---\ntype: archive\n---\n' >[]/_index.md)"
+
+exists:
+	pt --nocolor --nogroup -e '^link: ' src/bookmarks/content \
+		| sed 's!src/bookmarks/content!kalaclista:bookmarks!' \
+		| sed "s|:[0-9]\\+:link: |\t|" | sed "s|'||g" >static/assets/bookmarks.txt
+
 
 website:
 	echo notes bookmarks echos posts | tr ' ' "\n" \
@@ -27,10 +31,10 @@ website:
 			bash -c 'cd src/{}; hugo --quiet -d ../../dist/$(PROTO)/{} -b "$(PROTO)://$(HOST)/{}" --minify'
 	echo notes bookmarks echos posts | tr ' ' "\n" \
 		| xargs -I{} -P4 \
-			bash -c 'cd dist/$(PROTO)/{}; mkdir -p ../../../src/home/data/index; mv jsonindex.json ../../../src/home/data/index/{}.json'
+			bash -c 'cd dist/$(PROTO)/{}; mkdir -p ../../../src/home/data/$(PROTO)/index; mv jsonindex.json ../../../src/home/data/$(PROTO)/index/{}.json'
 	echo notes bookmarks echos posts | tr ' ' "\n" \
 		| xargs -I{} -P4 \
-			bash -c 'cd dist/$(PROTO)/{}; mkdir -p ../../../src/home/data/feed; cp jsonfeed.json ../../../src/home/data/feed/{}.json'
+			bash -c 'cd dist/$(PROTO)/{}; mkdir -p ../../../src/home/data/$(PROTO)/feed; cp jsonfeed.json ../../../src/home/data/$(PROTO)/feed/{}.json'
 	cd src/home && hugo --quiet -d ../../dist/$(PROTO) -b "$(PROTO)://$(HOST)" --minify
 	cp -r static/* dist/$(PROTO)/
 
@@ -40,10 +44,10 @@ http:
 https:
 	env NODE_ENV=production ENABLE_AMAZON=1 $(MAKE) website PROTO=https HOST=the.kalaclista.com
 
-preview: clean config archives
+preview: clean config archives exists
 	env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) website PROTO=http HOST=localhost:1313
 
-build: clean config archives
+build: clean config archives exists
 	$(MAKE) http
 	$(MAKE) https
 

@@ -1,0 +1,16 @@
+{{ $page := dict }}
+
+{{ $url := .Permalink }}
+{{ if ne (len (findRE "/bookmarks/" .Permalink)) 0 }}
+  {{ $url = replaceRE "(\\d{6})/" "#$1" $url }}
+  {{ $page = merge (dict "external_link" .Params.link) $page }}
+{{ end }}
+
+{{ $page = merge (dict "id" $url) $page }}
+{{ $page = merge (dict "url" $url) $page }}
+{{ $page = merge (dict "title" .Title) $page }}
+{{ $page = merge (dict "content_html" (partial "functions/markup.html.html" .Content)) $page }}
+{{ $page = merge (dict "date" .Date) $page }}
+{{ $page = merge (dict "tags" (default (slice) .Params.tags)) $page }}
+
+{{ $page | jsonify }}

@@ -1,0 +1,69 @@
+{{ $data := dict }}
+{{ $meta := partial "components/jsonmeta.html.html" . | unmarshal }}
+
+{{ $breadcrumb := slice }}
+{{ $position := 1 }}
+
+{{ $root := dict "@type" "ListItem" "position" $position "name" "カラクリスタ" "item" (absURL "/")}}
+{{ $position = add $position 1 }}
+{{ $breadcrumb = $breadcrumb | append $root }}
+
+{{ if or (eq $meta.website "posts") (eq $meta.website "echos") (eq $meta.website "bookmarks") (eq $meta.website "note") }}
+  {{ $website := dict "@type" "ListItem" "position" $position "name" $meta.site "item" (absURL (printf "/%s/" $meta.website)) }}
+  {{ $position = add $position 1 }}
+  {{ $breadcrumb = $breadcrumb | append $website }}
+{{ end }}
+
+
+{{ if or (eq $meta.website "posts") (eq $meta.website "echos") (eq $meta.website "bookmarks") }}
+  {{ $date := partial "functions/parsedate.html.html" .Page.File.Dir | unmarshal }} 
+
+  {{ if $date.hasYear }}
+    {{ $datetime := dict "@type" "ListItem" "position" $position "name" (printf "%s年" $date.year) "item" (absURL (printf "/%s/%s/" $meta.website $date.year)) }}
+    {{ $position = add $position 1 }}
+    {{ $breadcrumb = $breadcrumb | append $datetime }}
+  {{ end }}
+
+  {{ if $date.hasMonth }}
+    {{ $datetime := dict "@type" "ListItem" "position" $position "name" (printf "%s月" $date.month) "item" (absURL (printf "/%s/%s/%s/" $meta.website $date.year $date.month)) }}
+    {{ $position = add $position 1 }}
+    {{ $breadcrumb = $breadcrumb | append $datetime }}
+  {{ end }}
+
+  {{ if $date.hasDay }}
+    {{ $datetime := dict "@type" "ListItem" "position" $position "name" (printf "%s日" $date.day) "item" (absURL (printf "/%s/%s/%s/%s/" $meta.website $date.year $date.month $date.day)) }}
+    {{ $position = add $position 1 }}
+    {{ $breadcrumb = $breadcrumb | append $datetime }}
+  {{ end }}
+{{ end }}
+
+{{ if .Page.IsPage }}
+  {{ $article := dict "@type" "ListItem" "position" $position "name" $meta.title "item" $meta.url }}
+  {{ $position = add $position 1 }}
+  {{ $breadcrumb = $breadcrumb | append $article }}
+{{ end }}
+
+{{ $list := dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $breadcrumb }}
+
+{{ $author := dict "@type" "Person" "name" "OKAMURA Naoki a.k.a nyarla" "email" "nyarla@kalaclista.com"}}
+{{ $author = merge (dict "familyName" "OKAMURA" "givenName" "Naoki") $author }}
+
+{{ $schema := dict "@context" "https://schema.org" "author" $author }}
+
+{{ $types := dict "home" "WebSite" "search" "WebPage" "archives" "WebPage" "notfound" "WebPage" }}
+
+{{ if or (eq $meta.website "posts") (eq $meta.website "echos") (eq $meta.website "bookmarks") (eq $meta.website "note") }}
+  {{ if not .Page.IsPage }}
+    {{ $types = merge (dict "posts" "Blog" "echos" "Blog" "notes" "WebSite" "bookmarks" "Collection") $types }}
+  {{ else }}
+    {{ $types = merge (dict "posts" "BlogPosting" "echos" "BlogPosting" "notes" "Article" "bookmarks" "CollectionPage") $types }}
+  {{ end }} 
+{{ else }}
+  {{ if .Page.IsPage }}
+    {{ $types = merge (dict "home" "Article") $types}}
+  {{ end }}
+{{ end }}
+
+{{ $schema = merge (dict "@type" (index $types $meta.website) "@id" $meta.url "headline" $meta.title) $schema }}
+
+{{ slice $schema $list | jsonify }}

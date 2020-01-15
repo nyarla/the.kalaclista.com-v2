@@ -518,7 +518,7 @@ a.notes {
   }
 }
 
-.summary, .post, .notes, .echos {
+.summary, .post, .notes, .echos, .bookmark {
   & > .date {
     font-size: 0.725em ;
     font-weight: bold ;
@@ -658,6 +658,10 @@ a.notes {
     #description, #description + p {
       & br { display: block !important;}
     }
+  }
+
+  article {
+    word-break: break-all;   
   }
 
   .content {

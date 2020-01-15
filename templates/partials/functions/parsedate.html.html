@@ -1,29 +1,15 @@
-{{ $result := dict }}
-{{ with .File }}
-  {{ with .Dir }}
-    {{ $date := split . "/" }}
-    {{ $year := index $date 0 }}
+{{ $data := dict }}
 
-    {{ if gt (len (findRE "\\d+" $year)) 0 }}
-      {{ $result = merge $result (dict "isDate" true "hasYear" true "year" $year) }}
-
-      {{ $month := replaceRE "^0" "" (default "" (index $date 1)) }}
-      {{ $day := replaceRE "^0" "" (default "" (index $date 2)) }}
-
-      {{ if ne $month "" }}
-        {{ $result = merge $result (dict "hasMonth" true "month" $month) }}
-      {{ end }}
-
-      {{ if ne $day "" }}
-        {{ $result = merge $result (dict "hasDay" true "day" $day) }}
-      {{ end }}
+{{ range $src := split . "/" }}
+  {{ if ne (len (findRE "\\d{4}" $src)) 0 }}
+    {{ $data = merge (dict "hasYear" true "year" $src) $data }}
+  {{ else if ne (len (findRE "\\d{2}" $src)) 0 }}
+    {{ if $data.hasMonth }}
+      {{ $data = merge (dict "hasDay" true "day" (replaceRE "^0" "" $src)) $data }}
     {{ else }}
-      {{ $result = dict "isDate" false }}
+      {{ $data = merge (dict "hasMonth" true "month" (replaceRE "^0" "" $src)) $data }}
     {{ end }}
-  {{ else }}
-    {{  $result = dict "isDate" false }}
   {{ end }}
-{{ else }}
-  {{ $result = dict "isDate" false }}
 {{ end }}
-{{ $result | jsonify }}
+
+{{ merge (dict "isDate" (or $data.hasYear $data.hasMonth $data.hasDay)) $data | jsonify }}

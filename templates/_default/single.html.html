@@ -1,1 +1,74 @@
-{{ partial (printf "%s/single.html.html" .Site.Params.website) . }}
+{{- if ne .Site.Params.website "bookmarks" -}}
+<!doctype html>
+<html lang="ja">
+  <head prefix="og: http://ogp.me/ns# website: http://ogp.me/ns/website#">
+    {{ partial "components/meta.html.html" . }}
+  </head>
+  <body>
+    {{ partial "components/header.html.html" . }}
+
+    {{ $meta := partial "components/jsonmeta.html.html" . | unmarshal }}
+
+    {{ $data := partial "components/jsonpage.html.html" .Page | unmarshal }}
+    {{ $data = merge (dict "path" .Page.Path) $data }}
+
+    {{ $website := $meta.website }}
+    {{ if or (eq $website "search") (eq $website "archives") }}
+      {{ $website = "home" }}
+    {{ end }}
+
+    {{ partial "components/adsense.html.html" $.Site.Params.adsense.top }}
+
+    <main id="{{ $website }}">
+      {{ if eq $meta.website "posts" }}
+        {{ partial "components/blocks.html.html" (slice $data "post") }}
+      {{ end }}
+
+      {{ if eq $meta.website "echos" }}
+        {{ partial "components/blocks.html.html" (slice $data "echo") }}
+      {{ end }}
+
+      {{ if eq $meta.website "notes" }}
+        {{ partial "components/blocks.html.html" (slice $data "note") }}
+      {{ end }}
+
+      {{ if eq $meta.website "bookmarks" }}
+        {{ partial "components/blocks.html.html" (slice $data "bookmarks") }}
+      {{ end }}
+
+      {{ if eq $meta.website "home" }}
+        {{ partial "components/blocks.html.html" (slice $data "home") }}
+      {{ end }}
+
+      {{ if eq $meta.website "search" }}
+        {{ partial "components/blocks.html.html" (slice $data "search") }}
+      {{ end }}
+       
+      {{ if eq $meta.website "archives" }}
+        {{ $proto := "https" }}
+        {{ if ne (len (findRE "^http://" (absURL "/"))) 0 }}
+          {{ $proto = "http" }}
+        {{ end }}
+
+        {{ $data = merge (dict "pages" (index (index .Site.Data $proto) "index") ) $data }}
+        {{ $data = merge (dict "labels" .Site.Params.labels) $data }}
+        {{ partial "components/blocks.html.html" (slice $data "archives") }}
+      {{ end }}
+
+      {{ if or (eq $meta.website "posts") (eq $meta.website "echos") (eq $meta.website "notes")}}
+      <nav class="pagination">
+        {{ with .Page.Next }}
+        <a href="{{ .Permalink }}">前</a>
+        {{ end }} 
+        {{ with .Page.Prev }}
+        <a href="{{ .Permalink }}">次</a>
+        {{ end }} 
+      </nav>
+      {{ end }}
+    </main>
+
+    {{ partial "components/adsense.html.html" $.Site.Params.adsense.bottom }}
+    {{ partial "components/footer.html.html" . }}
+  </body>
+</html>
+{{- end -}}
