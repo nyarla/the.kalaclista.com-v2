@@ -48,8 +48,7 @@ preview: clean config archives exists
 	env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) website PROTO=http HOST=localhost:1313
 
 build: clean config archives exists
-	$(MAKE) http
-	$(MAKE) https
+	echo http https | tr ' ' "\n" | xargs -I[] -P2 $(MAKE) []
 
 live:
 	nix-shell --run "python3 -m http.server -d dist/http 1313" -p python3
