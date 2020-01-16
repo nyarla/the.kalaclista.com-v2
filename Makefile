@@ -16,14 +16,13 @@ config:
 archives:
 	echo bookmarks echos posts | tr ' ' "\n" \
 		| xargs -I[] find src/[]/content -type d \
-		| grep -P '\d+' | sed 's!src/\([^/]\+\)/content/!src/home/content/\1/!' \
-		| xargs -I[] -P8 bash -c "test -e []/_index.md || (mkdir -p []; echo -e '---\ntype: archive\n---\n' >[]/_index.md)"
+		| grep -P '\d+' \
+		| xargs -I[] -P8 bash -c "echo -e '---\ntype: archive\n---\n' >[]/_index.md"
 
 exists:
 	pt --nocolor --nogroup -e '^link: ' src/bookmarks/content \
 		| sed 's!src/bookmarks/content!kalaclista:bookmarks!' \
 		| sed "s|:[0-9]\\+:link: |\t|" | sed "s|'||g" >static/assets/bookmarks.txt
-
 
 website:
 	echo notes bookmarks echos posts | tr ' ' "\n" \

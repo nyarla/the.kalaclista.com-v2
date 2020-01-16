@@ -1,9 +1,7 @@
 {{ $entries := dict }}
 {{ $sitemap := slice }}
 
-{{ $year := slice }}
 {{ $month := slice }}
-{{ $day := slice }}
 
 {{ $pages := .Site.RegularPages.ByDate.Reverse }}
 {{ $before := (index $pages 0).Date }}
@@ -12,32 +10,18 @@
   {{ $data := partial "components/jsonpage.html.html" $page | unmarshal }}
   {{ $data = merge (dict "path" $page.Path) $data }}
 
-  {{ if ne ($before.Format "2006-01-02") ($page.Date.Format "2006-01-02") }}
-    {{ $entries = merge (dict ($before.Format "2006-01-02") $day) $entries }}
-    {{ $day = slice }}
-  {{ end }}
-
   {{ if ne ($before.Format "2006-01") ($page.Date.Format "2006-01") }}
     {{ $entries = merge (dict ($before.Format "2006-01") $month) $entries }}
     {{ $month = slice }}
   {{ end }}
 
-  {{ if ne ($before.Format "2006") ($page.Date.Format "2006") }}
-    {{ $entries = merge (dict ($before.Format "2006") $year) $entries }}
-    {{ $year = slice }}
-  {{ end }}
-
-  {{ $day = $day | append $data }}
   {{ $month = $month | append $data }}
-  {{ $year = $year | append $data }}
   {{ $sitemap = $sitemap | append $data }}
 
   {{ $before = $page.Date }}
 {{ end }}
 
-{{ $entries = merge (dict ($before.Format "2006-01-02") $day) $entries }}
 {{ $entries = merge (dict ($before.Format "2006-01") $month) $entries }}
-{{ $entries = merge (dict ($before.Format "2006") $year) $entries }}
 
 {{ range $page := where .Site.Pages.ByDate.Reverse "IsPage" false }}
   {{ $sitemap = $sitemap | append (dict "id" false "date" .Date "url" $page.Permalink) }}

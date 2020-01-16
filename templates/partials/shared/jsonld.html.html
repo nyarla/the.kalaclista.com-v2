@@ -1,7 +1,0 @@
-{{ $author := dict "@type" "Person" "name" "OKAMURA Naoki a.k.a nyarla" "email" "nyarla@kalaclista.com" }}
-{{ $author := merge $author (dict "familyName" "OKAMURA" "givenName" "Naoki") }}
-
-{{ $root := dict "@type" "ListItem" "position" 1 "name" "カラクリスタ" "item" (absURL "/") }}
-{{ $breadcrumb := slice $root }}
-
-{{ dict "author" $author "breadcrumb" $breadcrumb | jsonify }}
