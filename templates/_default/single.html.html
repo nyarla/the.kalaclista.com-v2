@@ -17,7 +17,9 @@
       {{ $website = "home" }}
     {{ end }}
 
-    {{ partial "components/adsense.html.html" $.Site.Params.adsense.top }}
+    {{ if and (ne $meta.website "home") (ne $meta.website "search") (ne $meta.website "archives") }}
+      {{ partial "components/adsense.html.html" $.Site.Params.adsense.top }}
+    {{ end }}
 
     <main id="{{ $website }}">
       {{ if eq $meta.website "posts" }}
@@ -67,7 +69,9 @@
       {{ end }}
     </main>
 
-    {{ partial "components/adsense.html.html" $.Site.Params.adsense.bottom }}
+    {{ if and (ne $meta.website "home") (ne $meta.website "search") (ne $meta.website "archives") }}
+      {{ partial "components/adsense.html.html" $.Site.Params.adsense.bottom }}
+    {{ end }}
     {{ partial "components/footer.html.html" . }}
   </body>
 </html>
