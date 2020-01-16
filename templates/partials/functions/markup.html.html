@@ -3,11 +3,21 @@
 {{- end -}}
 
 {{- define "_fix_keyword_links" -}}
-  {{- if (ne (len (findRE "/notes/[^ /]+[ ][^/]+/" .)) 0) -}}
+  {{- if findRE "/notes/[^ /]+[ ][^/]+/" . -}}
     {{ $content := (replaceRE "/notes/([^ /]+)[ ]([^/]+)/" "/notes/$1-$2/" .) }}
     {{- block "_fix_keyword_links" $content -}}{{- end -}}
   {{- else -}}
     {{- block "_as_html" . -}}{{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "_fix_furigana" -}}
+  {{- $re := "(<code>[\\s\\S]*?)<ruby>(.+?)<rp>（</rp> <rt>(.+?)</rt> <rp>）</rp></ruby>" -}}
+  {{- if findRE $re . -}}
+    {{- $content := replaceRE $re "$1{$2|$3}" . -}}
+    {{- block "_fix_furigana" $content -}}{{- end -}}
+  {{- else -}}
+    {{- block "_markup_keyword_links" . -}}{{- end -}}
   {{- end -}}
 {{- end -}}
 
@@ -17,8 +27,8 @@
 {{- end -}}
 
 {{- define "_markup_furigana" -}}
-  {{- $content := replaceRE "\\{([^|\\n]+?)[|]([^\\}\\n]+?)\\}" "<ruby>$1 <rp>（</rp> <rt>$2</rt> <rp>）</rp></ruby>" . -}}
-  {{- block "_markup_keyword_links" $content -}}{{- end -}}
+  {{- $content  := replaceRE "\\{([^|\\n]+?)[|]([^\\\\}\\n]+?)\\}" "<ruby>$1 <rp>（</rp> <rt>$2</rt> <rp>）</rp></ruby>" . -}}
+  {{- block "_fix_furigana" $content -}}{{- end -}}
 {{- end -}}
 
 {{- define "content" -}}
