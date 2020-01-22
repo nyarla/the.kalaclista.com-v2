@@ -23,8 +23,4 @@
 
 {{ $entries = merge (dict ($before.Format "2006-01") $month) $entries }}
 
-{{ range $page := where .Site.Pages.ByDate.Reverse "IsPage" false }}
-  {{ $sitemap = $sitemap | append (dict "id" false "date" .Date "url" $page.Permalink) }}
-{{ end }}
-
 {{ dict "entries" $entries "sitemap" $sitemap | jsonify }}
