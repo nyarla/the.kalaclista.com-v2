@@ -177,35 +177,46 @@ a.notes {
   }
 
   & .webcard {
-    margin: 1em auto ;
-    border: 3px solid var(--Color-Gray-Brightest) ;
-    border-radius: 1.5px ;
-    background-color: var(--Color-Gray-Brightest) ;
-    box-shadow: 0px 1.5px 3px var(--Color-Gray-Bright) ;
-
-    &[data-thumbnail] {
-      background-size: 100% ;
-      background-position: 50% 50% ;
-    }
-
-    &:hover, &:focus {
-      border-color: var(--Color-Cyan-Bright) ;
-      transition: border-color ease 0.19s ;
-    }
+    margin: 1em 0 1em 0.5em ;
 
     & a {
       display: block ;
-      background-color: rgba(255, 255, 255, 0.91) ;
-      padding: 0.5em 1em ;
+      padding-left: 0.5em ;
+
       text-decoration: none ;
+      position: relative ;
+
+      font-size: 91% ;
+
+      &::before {
+        display: block ;
+        content: '' ;
+        position: absolute ;
+        top: 0 ; bottom: 0 ; left: 0 ;
+        width: 3px ;
+        background-color: var(--Color-Cyan-Dark) ;
+        border-radius: 3px ; 
+      }
+
+      &:hover, &:focus {
+        &::before {
+          background-color: var(--Color-Cyan-Bright) ;
+          transition: background-color ease 0.19s ;
+        }
+      }
 
       & h1, & p {
         margin: 0 ;
       }
 
       & h1 {
-        margin-bottom: 1em ;
+        margin-bottom: 0.5em ;
         color: var(--Color-Gray-Darkest) ;
+      }
+
+      & blockquote {
+        margin-top: 0.5em ;
+        margin-bottom: 0.5em ;
       }
 
       & > blockquote p {
@@ -213,7 +224,7 @@ a.notes {
       }
 
       & > p {
-        margin-top: 1em ;
+        margin-top: 0.5em ;
         color: var(--Color-Green-Dark) ;
         overflow-wrap: anywhere ;
         word-break: break-all ;
@@ -222,64 +233,67 @@ a.notes {
   }
 
   & .shopcard {
-    margin: 1em auto ; 
-    min-height: 128px ;
-    padding: 0.5em 1em ;
-    border: 3px solid var(--Color-Gray-Brightest) ;
-    border-radius: 1.5px ;
-    background-color: var(--Color-Gray-Brightest) ;
-    box-shadow: 0px 1.5px 3px var(--Color-Gray-Bright) ;
-    transition: border-color ease 0.19s ;
+    margin: 1em 0em 1em 0.5em ;
 
-    &:hover, &:focus {
-      border-color: var(--Color-Lime-Bright) ;
-    }
+    & nav {
+      position: relative ;
+      padding-left: 0.5em ;
 
-    & .thumbnail {
-      float: right ;
-    }
+      font-size: 91% ;
 
-    &::after {
-      display: inline ;
-      content: '' ;
-      clear: both ;
-    }
-
-    & h1 {
-      margin: 0 0 1em 0 ;
-
-      --Link-NonActivated-Color: var(--Color-Gray-Darkest) ;
-    }
-    
-    & ul {
-      margin: 0 0 1em 0 ;
-
-      & li {
-        list-style: none ;
-        display: inline-block ;
+      &::before {
+        display: block ;
+        content: '' ;
+        position: absolute ;
+        top: 0 ; bottom: 0 ; left: 0 ;
+        width: 3px ;
+        background-color: var(--Color-Lime-Dark) ;
+        border-radius: 3px ; 
       }
 
-      & li a {
-        display: block ;
-        margin: 0 0.5em 0 0 ;
-        padding: 0.25em 0.5em ;
-        box-shadow: 0px 1.5px 1.5px var(--Color-Gray-Bright) ;
-        border-radius: 3px ;
-
-        &[href^="https://www.amazon.co.jp/"] {
-          --Link-NonActivated-Color: #000000 ;
-          --Link-Activated-Color: #000000 ;
-          --Link-NonActivated-Decoration: none ;
-          --Link-Activated-Decoration: underline ;
-          background-color: #FF9900 ;
+      &:hover, &:focus {
+        &::before {
+          background-color: var(--Color-Lime-Bright) ;
+          transition: background-color ease 0.19s ;
         }
+      }
       
-        &[href^="https://a.r10.to/"] {
-          --Link-NonActivated-Color: #FFFFFF ;
-          --Link-Activated-Color: #FFFFFF ;
-          --Link-NonActivated-Decoration: none ;
-          --Link-Activated-Decoration: underline ;
-          background-color: #BF0000 ;
+      & h1 {
+        margin: 0 0 0.25em 0 ;
+        --Link-NonActivated-Color: var(--Color-Gray-Darkest) ;
+      }
+
+      & ul {
+        margin: 0 ;
+        & li {
+          display: inline-block ;
+
+          & a {
+            display: inline-block ;
+            position: relative ;
+            padding-left: 0.5em ;
+            margin: 0 0.5em ;
+
+            line-height: 1.414em ;
+
+            --Link-NonActivated-Color: var(--Color-Gray-Darker) ;
+            &::before {
+              display: block ;
+              content: '' ;
+              position: absolute ;
+              top: 0 ; bottom: 0 ; left: 0 ;
+              width: 3px ;
+              border-radius: 3px ; 
+            }
+
+            &[href^="https://www.amazon.co.jp/"]::before {
+              background-color: #FF9900 ;
+            }
+          
+            &[href*="rakuten.co.jp/"]::before {
+              background-color: #BF0000 ;
+            }
+          }
         }
       }
     }

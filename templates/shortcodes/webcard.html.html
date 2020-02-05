@@ -2,13 +2,8 @@
 {{ $title := $args.title }}
 {{ $description := $args.description }}
 {{ $permalink := $args.permalink }}
-{{ $thumbnail := default "" $args.thumbnail }}
 
-<figure class="webcard"
-        {{ if ne $thumbnail ""  }}
-        data-thumbnail="true"
-        style="background-image: url('{{ $thumbnail }}')"
-        {{ end }}>
+<figure class="webcard">
   <a href="{{ $permalink }}">
     <h1>{{ $title }}</h1>
     <blockquote>

@@ -38,13 +38,13 @@ website:
 	cp -r static/* dist/$(PROTO)/
 
 http:
-	env NODE_ENV=production ENABLE_AMAZON=0 $(MAKE) website PROTO=http HOST=kalaclista.com
+	env NODE_ENV=production ENABLE_MONETIZE=0 $(MAKE) website PROTO=http HOST=kalaclista.com
 
 https:
-	env NODE_ENV=production ENABLE_AMAZON=1 $(MAKE) website PROTO=https HOST=the.kalaclista.com
+	env NODE_ENV=production ENABLE_MONETIZE=1 $(MAKE) website PROTO=https HOST=the.kalaclista.com
 
 preview: clean config archives exists
-	env NODE_ENV=development ENABLE_AMAZON=0 $(MAKE) website PROTO=http HOST=localhost:1313
+	env NODE_ENV=development ENABLE_MONETIZE=0 $(MAKE) website PROTO=http HOST=localhost:1313
 
 build: clean config archives exists
 	echo http https | tr ' ' "\n" | xargs -I[] -P2 $(MAKE) []
