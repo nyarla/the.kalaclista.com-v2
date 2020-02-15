@@ -15,6 +15,3 @@
   {{ end }}
 </footer>
 
-{{ if (eq (default "development" (getenv "NODE_ENV")) "production") }}
-{{ .Site.Params.analysis | safeHTML }}
-{{ end }}

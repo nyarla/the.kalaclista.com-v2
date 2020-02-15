@@ -1,9 +1,1 @@
-{{ $code := . }}
 
-<aside class="ads">
-{{ if (eq (default "development" (getenv "NODE_ENV")) "production") }}
-  {{ $code | safeHTML }}
-{{ else }}
-  <div style="display: inline-block ; width: 100% ; height: 320px ;"></div>
-{{ end }}
-</aside>

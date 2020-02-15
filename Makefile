@@ -37,9 +37,6 @@ website:
 	cd src/home && hugo --quiet -d ../../dist/$(PROTO) -b "$(PROTO)://$(HOST)" --minify
 	cp -r static/* dist/$(PROTO)/
 
-http:
-	env NODE_ENV=production ENABLE_MONETIZE=0 $(MAKE) website PROTO=http HOST=kalaclista.com
-
 https:
 	env NODE_ENV=production ENABLE_MONETIZE=1 $(MAKE) website PROTO=https HOST=the.kalaclista.com
 
@@ -47,7 +44,7 @@ preview: clean config archives exists
 	env NODE_ENV=development ENABLE_MONETIZE=0 $(MAKE) website PROTO=http HOST=localhost:1313
 
 build: clean config archives exists
-	echo http https | tr ' ' "\n" | xargs -I[] -P2 $(MAKE) []
+	$(MAKE)	https
 
 live:
 	nix-shell --run "python3 -m http.server -d dist/http 1313" -p python3
@@ -56,13 +53,12 @@ up:
 	echo "." >.edit
 	tmux-up
 
-upload:
-	rsync -e "ssh -p 57092 -i ~/.ssh/id_$(DOMAIN)" \
-		-rtOu --modify-window=1 --delete dist/$(PROTO)/ www-data@web.internal.nyarla.net:/data/dist/$(DOMAIN)/
-
 deploy:
-	echo kalaclista.com the.kalaclista.com | tr ' ' "\n" \
-		| xargs -I{} -P2 bash -c 'make upload DOMAIN={} PROTO=$$(bash -c "test {} = kalaclista.com && echo http || echo https")'
+	firebase deploy 
+
+#deploy:
+#	echo kalaclista.com the.kalaclista.com | tr ' ' "\n" \
+#		| xargs -I{} -P2 bash -c 'make upload DOMAIN={} PROTO=$$(bash -c "test {} = kalaclista.com && echo http || echo https")'
 
 upload-via-aws-codebuild:
 	rsync -e "ssh -p 57092 -i ~/.ssh/id_$(DOMAIN) -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
