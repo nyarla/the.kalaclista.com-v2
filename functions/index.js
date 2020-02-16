@@ -86,7 +86,7 @@ app.get('/assets/avatar2.svg', (r, w) => {
     url = v;
   }
 
-  send(addr, url).then(() => { respond(w); }, (err) => { console.error(err); respond(w) });
+  send(addr, ua, url).then(() => { respond(w); }, (err) => { console.error(err); respond(w) });
 });
 
 exports.analysis = functions.https.onRequest(app);
