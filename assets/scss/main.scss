@@ -474,6 +474,11 @@ a.notes {
       }
     }
   }
+   & > aside > p {
+     margin-top: 4em ;
+     --Widget-Hexagon-Size: 48px ;
+     text-align: center ;
+   }
 }
 
 /* Article */

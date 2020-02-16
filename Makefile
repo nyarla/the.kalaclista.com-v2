@@ -27,27 +27,27 @@ exists:
 website:
 	echo notes bookmarks echos posts | tr ' ' "\n" \
 		| xargs -I{} -P4 \
-			bash -c 'cd src/{}; hugo --quiet -d ../../dist/$(PROTO)/{} -b "$(PROTO)://$(HOST)/{}" --minify'
+			bash -c 'cd src/{}; hugo --quiet -d ../../dist/{} -b "$(PROTO)://$(HOST)/{}" --minify'
 	echo notes bookmarks echos posts | tr ' ' "\n" \
 		| xargs -I{} -P4 \
-			bash -c 'cd dist/$(PROTO)/{}; mkdir -p ../../../src/home/data/$(PROTO)/index; mv jsonindex.json ../../../src/home/data/$(PROTO)/index/{}.json'
+			bash -c 'cd dist/{}; mkdir -p ../../src/home/data/$(PROTO)/index; mv jsonindex.json ../../src/home/data/$(PROTO)/index/{}.json'
 	echo notes bookmarks echos posts | tr ' ' "\n" \
 		| xargs -I{} -P4 \
-			bash -c 'cd dist/$(PROTO)/{}; mkdir -p ../../../src/home/data/$(PROTO)/feed; cp jsonfeed.json ../../../src/home/data/$(PROTO)/feed/{}.json'
-	cd src/home && hugo --quiet -d ../../dist/$(PROTO) -b "$(PROTO)://$(HOST)" --minify
-	cp -r static/* dist/$(PROTO)/
+			bash -c 'cd dist/{}; mkdir -p ../../src/home/data/$(PROTO)/feed; cp jsonfeed.json ../../src/home/data/$(PROTO)/feed/{}.json'
+	cd src/home && hugo --quiet -d ../../dist -b "$(PROTO)://$(HOST)" --minify
+	cp -r static/* dist/
 
 https:
 	env NODE_ENV=production ENABLE_MONETIZE=1 $(MAKE) website PROTO=https HOST=the.kalaclista.com
 
 preview: clean config archives exists
-	env NODE_ENV=development ENABLE_MONETIZE=0 $(MAKE) website PROTO=http HOST=localhost:1313
+	env NODE_ENV=development ENABLE_MONETIZE=0 $(MAKE) website PROTO=http HOST=localhost:5000
 
 build: clean config archives exists
 	$(MAKE)	https
 
 live:
-	nix-shell --run "python3 -m http.server -d dist/http 1313" -p python3
+	firebase serve
 
 up:
 	echo "." >.edit

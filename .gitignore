@@ -2,3 +2,4 @@
 dist
 static/assets/bookmarks.txt
 .firebase
+**/node_modules/**

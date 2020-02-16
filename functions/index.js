@@ -1,4 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+const functions = require('firebase-functions');
+const express = require('express');
+const crypto = require('crypto'); 
+const fetch = require('node-fetch');
+
+const app = express();
+const svg = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
     xmlns:svg="http://www.w3.org/2000/svg"
     xmlns="http://www.w3.org/2000/svg" version="1.1"
@@ -11,4 +17,59 @@
         id="path3072"
         style="fill:#000000;stroke:#000000;stroke-width:1.0961411px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"/>
 </svg>
+`;
 
+function makePayload(addr, url) {
+  var date = new Date(Date.now()).toISOString().split('T')[0];
+  var hash = crypto.createHash('sha256');
+
+  hash.update(addr);
+  hash.update(date);
+
+  var src = crypto.createHash('md5');
+  
+  src.update(hash.digest('hex'));
+
+  var uid = src.digest('hex');
+
+  return [
+    'v=1',
+    't=pageview',
+    'tid=UA-158600592-1',
+    'ds=web',
+    `uid=${encodeURIComponent(uid)}`,
+    `dp=${encodeURIComponent(url)}`
+  ].join('&');
+}
+
+function send(addr, ua, url) {
+  var payload = makePayload(addr, url);
+
+  return fetch('https://www.google-analytics.com/collect', {
+    method: 'POST',
+    headers: {
+      'User-Agent': ua,
+      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+    },
+    body: payload
+  });
+}
+
+function respond(w) {
+  w.set({
+    'Content-Type': 'image/svg+xml; charset=utf-8',
+    'Cache-Control': 'no-cache'
+  });
+  w.send(svg);
+  w.end();
+}
+
+app.get('/assets/avatar2.svg', (r, w) => {
+  var addr = (r.get('X-Forwarded-For') || '').split(',')[0];
+  var url = (r.get('Referrer') || '').replace('https://the.kalaclista.com', '');
+  var ua = (r.get('User-Agent') || '');
+
+  send(addr, url).then(() => { respond(w); }, (err) => { console.error(err); respond(w) });
+});
+
+exports.analysis = functions.https.onRequest(app);
