@@ -65,9 +65,26 @@ function respond(w) {
 }
 
 app.get('/assets/avatar2.svg', (r, w) => {
-  var addr = (r.get('X-Forwarded-For') || '').split(',')[0];
-  var url = (r.get('Referrer') || '').replace('https://the.kalaclista.com', '');
-  var ua = (r.get('User-Agent') || '');
+  var addr  = '127.0.0.1',
+      ua    = 'notset',
+      url   = '/404.html',
+      v     = null
+  ;
+
+  v = r.get('X-Forwarded-For');
+  if ( typeof(v) !== 'undefined' && v !== null ) {
+    addr = v.split(',')[0];
+  }
+
+  v = r.get('User-Agent'); 
+  if ( typeof(v) !== 'undefined' && v !== null ) {
+    ua = v;
+  }
+
+  v = r.query.page; 
+  if ( typeof(v) !== 'undefined' && v !== null ) {
+    url = v;
+  }
 
   send(addr, url).then(() => { respond(w); }, (err) => { console.error(err); respond(w) });
 });

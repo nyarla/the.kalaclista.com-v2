@@ -56,20 +56,12 @@ up:
 deploy:
 	firebase deploy 
 
-#deploy:
-#	echo kalaclista.com the.kalaclista.com | tr ' ' "\n" \
-#		| xargs -I{} -P2 bash -c 'make upload DOMAIN={} PROTO=$$(bash -c "test {} = kalaclista.com && echo http || echo https")'
-
-upload-via-aws-codebuild:
-	rsync -e "ssh -p 57092 -i ~/.ssh/id_$(DOMAIN) -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
-		-rtOu --modify-window=1 --delete dist/http/ www-data@web.internal.nyarla.net:/data/dist/$(DOMAIN)/
-
-deploy-via-aws-codebuild:
-	echo kalaclista.com the.kalaclista.com | tr ' ' "\n" \
-		| xargs -I{} -P2 $(MAKE) upload-via-aws-codebuild DOMAIN={}
-
 pull:
 	cd src && git pull origin master && cd ../
 	git pull origin master
+
+update: pull build
+	firebase deploy --only=hosting
+
 
 push: pull build deploy
