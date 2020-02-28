@@ -14,7 +14,8 @@
   </nav>
   {{ end }}
 
+  {{ $meta := partial "components/jsonmeta.html.html" . | unmarshal }}
   <aside>
-    <p><a href="{{ absURL "/nyarla/" }}" class="hexagon"><img src="{{ absURL "/assets/avatar2.svg" }}?page={{ .Page.RelPermalink }}" width="48" height="48"></a></p>
+    <p><a href="{{ absURL "/nyarla/" }}" class="hexagon"><img src="{{ absURL "/assets/avatar2.svg" }}?page={{ .Page.RelPermalink }}&title={{ $meta.title }}" width="48" height="48"></a></p>
   </aside>
 </footer>

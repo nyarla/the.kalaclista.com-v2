@@ -1,6 +1,5 @@
 const functions = require('firebase-functions');
 const express = require('express');
-const crypto = require('crypto'); 
 const fetch = require('node-fetch');
 
 const app = express();
@@ -19,31 +18,21 @@ const svg = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 </svg>
 `;
 
-function makePayload(addr, url) {
-  var date = new Date(Date.now()).toISOString().split('T')[0];
-  var hash = crypto.createHash('sha256');
-
-  hash.update(addr);
-  hash.update(date);
-
-  var src = crypto.createHash('md5');
-  
-  src.update(hash.digest('hex'));
-
-  var uid = src.digest('hex');
-
+function makePayload(url, title) {
   return [
     'v=1',
     't=pageview',
     'tid=UA-158600592-1',
     'ds=web',
-    `uid=${encodeURIComponent(uid)}`,
-    `dp=${encodeURIComponent(url)}`
+    'cid=de3b94f6-e237-4493-873d-26bf090e2ceb',
+    `dp=${encodeURIComponent(url)}`,
+    `dh=the.kalaclista.com`,
+    `dt=${encodeURIComponent(title)}`,
   ].join('&');
 }
 
-function send(addr, ua, url) {
-  var payload = makePayload(addr, url);
+function send(ua, url, title) {
+  var payload = makePayload(url, title);
 
   return fetch('https://www.google-analytics.com/collect', {
     method: 'POST',
@@ -65,16 +54,11 @@ function respond(w) {
 }
 
 app.get('/assets/avatar2.svg', (r, w) => {
-  var addr  = '127.0.0.1',
-      ua    = 'notset',
+  var ua    = 'notset',
       url   = '/404.html',
+      title = '',
       v     = null
   ;
-
-  v = r.get('X-Forwarded-For');
-  if ( typeof(v) !== 'undefined' && v !== null ) {
-    addr = v.split(',')[0];
-  }
 
   v = r.get('User-Agent'); 
   if ( typeof(v) !== 'undefined' && v !== null ) {
@@ -86,7 +70,13 @@ app.get('/assets/avatar2.svg', (r, w) => {
     url = v;
   }
 
-  send(addr, ua, url).then(() => { respond(w); }, (err) => { console.error(err); respond(w) });
+  v = r.query.title; 
+  if ( typeof(v) !== 'undefined' && v !== null ) {
+    title = v;
+  }
+
+
+  send(ua, url, title).then(() => { respond(w); }, (err) => { console.error(err); respond(w) });
 });
 
 exports.analysis = functions.https.onRequest(app);
