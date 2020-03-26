@@ -55,7 +55,7 @@
     {{ if eq $website "notes" }}
     <time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}</time>
     {{ else }}
-    <a href="{{ absURL (dateFormat "/posts/2006/01/02/" .date) }}">
+    <a href="{{ absURL (dateFormat (printf "/%s/2006/01/02/" $website) .date) }}">
       <time datetime="{{ dateFormat "2006-01-02" .date }}">
         {{ dateFormat "2006年1月2日" .date }}
       </time>
