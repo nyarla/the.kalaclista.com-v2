@@ -1,10 +1,6 @@
 {{ $page := dict }}
 
 {{ $url := .Permalink }}
-{{ if ne (len (findRE "/bookmarks/" .Permalink)) 0 }}
-  {{ $url = replaceRE "(\\d{6})/" "#$1" $url }}
-  {{ $page = merge (dict "external_link" .Params.link) $page }}
-{{ end }}
 
 {{ $page = merge (dict "id" $url) $page }}
 {{ $page = merge (dict "url" $url) $page }}

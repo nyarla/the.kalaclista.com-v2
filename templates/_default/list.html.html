@@ -18,30 +18,14 @@
 
     {{ if eq .Site.Params.website "home" }}
       {{ if .Page.IsHome }}
-        {{ range $section := slice "posts" "echos" "notes" "bookmarks" }} 
+        {{ range $section := slice "posts" "echos" "notes" }} 
           {{ $list = $list | append (index (index $.Site.Data $proto).feed $section).items }}
         {{ end }}
         {{ $list = first 15 (sort $list "date" "desc" )}}
       {{ end }}
     {{ else }}
       {{ $pages := slice }}
-      {{ $date := partial "functions/parsedate.html.html" .Page.File.Dir | unmarshal}}
-      {{ if $date.isDate }}
-        {{ if $date.hasDay }}
-          {{ $pages = where .Pages "IsPage" true }}
-        {{ else if $date.hasMonth }}
-          {{ range $day := .Pages }}
-            {{ $pages = $pages | append (where ($day.GetPage ($day.Date.Format "/2006/01/02")).Pages "IsPage" true ) }}
-          {{ end }}
-        {{ else }}
-          {{ range $month := .Pages }}
-            {{ $m := partial "functions/parsedate.html.html" $month.File.Dir | unmarshal }}
-            {{ range $day := ($month.GetPage (printf "/%s/%02d" $m.year (int $m.month))).Pages}}
-              {{ $pages = $pages | append (where ($day.GetPage ($day.Date.Format "/2006/01/02")).Pages "IsPage" true ) }}
-            {{ end }}
-          {{ end }}
-        {{ end }}
-      {{ else if (and .Page.IsHome (ne $meta.website "notes")) }}
+      {{ if (and .Page.IsHome (ne $meta.website "notes")) }}
         {{ $pager := .Paginate .Site.RegularPages.ByDate.Reverse }}
         {{ $pages = $pager.Pages }}
         {{ if $pager.HasNext }}
@@ -79,27 +63,10 @@
             {{ $displayed = add $displayed 1 }}
             {{ $count = 0 }}
           {{ end }}
-          {{ if eq $meta.website "bookmarks" }}
-          <h1 class="date">
-            <a href="{{ absURL (printf "/bookmarks/%s/" (dateFormat "2006/01/02" $date)) }}">
-              <time datetime="{{ dateFormat "2006-01-02" $date }}">
-                {{ dateFormat "2006年1月2日" $date }}
-              </time>
-            </a>
-          </h1>
-          {{ end }}
         {{ end }}
         
         {{ $type := "summary" }}
-        {{ if eq $meta.website "home" }}
-          {{ if findRE "/bookmarks/" $data.url }} 
-            {{ $type = "bookmark" }}
-          {{ else }}
-            {{ $type = "summary" }}
-          {{ end }}
-        {{ else if eq $meta.website "bookmarks" }}
-          {{ $type = "bookmark" }}
-        {{ else if eq $meta.website "echos"}}
+        {{ if eq $meta.website "echos"}}
           {{ $type = "echo" }}
         {{ end }}
 

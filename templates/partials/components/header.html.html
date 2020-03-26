@@ -27,7 +27,7 @@
   <p id="message">{{ index .Site.Params.message $msg | markdownify }}</p>
 
   <nav>
-    {{ range $ns := slice "home" "posts" "echos" "notes" "bookmarks" "search" "archives" }}
+    {{ range $ns := slice "home" "posts" "echos" "notes" "search" "archives" }}
       {{ $link := "/" }}
       {{ if ne $ns "home" }}
         {{ $link = printf "/%s/" $ns }}

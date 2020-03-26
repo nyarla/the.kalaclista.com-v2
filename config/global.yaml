@@ -94,7 +94,6 @@ params:
     posts: 記事
     echos: 雑文
     notes: 覚書
-    bookmarks: 参照
     search: 検索
     archives: 記録
 
@@ -102,7 +101,6 @@ params:
     posts: "ブログ"
     echos: "エコーズ"
     notes: "ノート"
-    bookmarks: "ブックマーク"
     search: "サーチ"
     archives: "アーカイブ"
     notfound: "イズ・ノット・ファウンド"
@@ -117,7 +115,6 @@ params:
     posts: "『輝かしい青春』なんて失かった方の<br>『にゃるら』のブログ。<br>過去の遺物が色々混ざってます"
     echos: "『輝かしい青春』なんて失かった方の<br>『にゃるら』のぼやき。<br>あるいはチラシの裏"
     notes: "『輝かしい青春』なんて失かった方の<br>『にゃるら』のノート。<br>いわゆるまとめ系"
-    bookmarks: "『輝かしい青春』なんて失かった方の<br>『にゃるら』のブックマーク。<br>ここが本体です"
     search: "『輝かしい青春』なんて失かった方の<br>『にゃるら』の個人 Webサイトを検索します"
     archives: "『輝かしい青春』なんて失かった方の<br>『にゃるら』の過去ログ。<br>色々と歴史がある"
     notfound: "いわゆる 404 Not Found 。<br>ページが見付かりません"
@@ -132,11 +129,9 @@ params:
     posts: "カラクリスタ・ブログの %s Feed"
     echos: "カラクリスタ・エコーズの %s Feed"
     notes: "カラクリスタ・ノートの %s Feed"
-    bookmarks: "カラクリスタ・ブックマークの %s Feed"
 
   tag:
     posts: "%s と言うタグの付いた記事"
-    bookmarks: "%s と言うタグの付いたブックマーク"
 
   helps:
     - label: "運営者"

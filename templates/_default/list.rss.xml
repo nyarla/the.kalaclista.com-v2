@@ -23,7 +23,7 @@
     {{ end }}
 
     {{ if eq .Site.Params.website "home" }}
-      {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
+      {{ range $section := slice "posts" "echos" "notes" }}
         {{ range $page := (index (index $.Site.Data $proto).feed $section).items }}
           {{ $pages = $pages | append (merge (dict "type" $section) $page)}}
         {{ end }}

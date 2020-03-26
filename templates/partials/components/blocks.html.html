@@ -1,34 +1,3 @@
-{{ define "bookmark" }}
-<article  class="bookmark"
-          {{ if .path }}
-          data-edit-protocol="kalaclista:bookmarks/{{ .path }}"
-          data-edit-label="{{ .title }}"
-          {{ end }}
-          >
-  <p class="date">
-    {{ if not .path }}
-    <a href="{{ absURL "/bookmarks/" }}">参照</a>
-    {{ end }}
-    <a href="{{ absURL (dateFormat "/bookmarks/2006/01/02/" .date) }}">
-        <time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}</time>
-    </a>
-  </p>
-  <h1 id="{{ dateFormat "150405" .date }}">
-    <a href="{{ .external_link }}">{{ .title }}</a>
-  </h1>
-  {{ if ne (len (default (slice) .tags)) 0 }}
-  <nav>
-    {{ range $tag := sort .tags }}
-    <a href="{{ absURL (printf "/bookmarks/tags/%s/" $tag) }}">{{ $tag }}</a>
-    {{ end }}
-  </nav>
-  {{ end }}
-  <section class="content">
-    {{ .content_html | safeHTML }}
-  </section>
-</article>
-{{ end }}
-
 {{ define "summary" }}
   {{ $website := "posts" }}
   {{ if findRE "/notes/" .url }}
@@ -55,7 +24,7 @@
     {{ if eq $website "notes" }}
     <time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}</time>
     {{ else }}
-    <a href="{{ absURL (dateFormat (printf "/%s/2006/01/02/" $website) .date) }}">
+    <a href="{{ absURL "/archives/" }}{{ dateFormat (printf "#/%s/2006/01/" $website) .date }}">
       <time datetime="{{ dateFormat "2006-01-02" .date }}">
         {{ dateFormat "2006年1月2日" .date }}
       </time>
@@ -76,7 +45,7 @@
           {{ end }}
           >
   <p class="date">
-    <a href="{{ absURL (dateFormat "/posts/2006/01/02/" .date) }}">
+    <a href="{{ absURL "/archives/" }}{{ dateFormat "#/posts/2006/01/" .date }}">
       <time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}</time>
     </a>
   </p>
@@ -143,8 +112,8 @@
           {{ end }}
           >
   <p class="date">
-    <a href="{{ absURL (dateFormat "/echos/2006/01/02/" .date) }}">
-        <time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}</time>
+    <a href="{{ absURL "/archives/" }}{{ dateFormat  "#/echos/2006/01/02/" .date }}">
+      <time datetime="{{ dateFormat "2006-01-02" .date }}">{{ dateFormat "2006年1月2日" .date }}</time>
     </a>
   </p>
   <h1><a href="{{ .url }}">{{ .title }}</a></h1>
@@ -187,13 +156,13 @@
         {{ range $month := seq (12) (-1) (1) }}
           {{ $displayed := false }}
           {{ $key := printf "%04d-%02d" $year $month }}
-          {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
+          {{ range $section := slice "posts" "echos" "notes" }}
             {{ if ne (len (default (slice) (index (index $data.pages $section).entries $key) )) 0 }}
               {{ if not $displayed }}
                 <h1>{{ printf "%04d年%d月" $year $month }}</h1>
                 {{ $displayed = true }}
               {{ end }}
-              <h2>
+              <h2 id="{{ printf "/%s/%04d/%02d/" $section $year $month }}">
                 {{ if ne $section "notes" }}
                 <a href="{{ absURL (printf "/%s/%04d/%02d/" $section $year $month) }}">
                   {{ index $.labels $section }}
@@ -235,10 +204,6 @@
 
 {{ if eq $type "note" }}
   {{ block "note" $page }}{{ end }}
-{{ end }}
-
-{{ if eq $type "bookmark" }}
-  {{ block "bookmark" $page }}{{ end }}
 {{ end }}
 
 {{ if eq $type "home" }}

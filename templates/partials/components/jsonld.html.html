@@ -8,33 +8,28 @@
 {{ $position = add $position 1 }}
 {{ $breadcrumb = $breadcrumb | append $root }}
 
-{{ if or (eq $meta.website "posts") (eq $meta.website "echos") (eq $meta.website "bookmarks") (eq $meta.website "note") }}
+{{ if or (eq $meta.website "posts") (eq $meta.website "echos") (eq $meta.website "note") }}
   {{ $website := dict "@type" "ListItem" "position" $position "name" $meta.site "item" (absURL (printf "/%s/" $meta.website)) }}
   {{ $position = add $position 1 }}
   {{ $breadcrumb = $breadcrumb | append $website }}
 {{ end }}
 
 
-{{ if or (eq $meta.website "posts") (eq $meta.website "echos") (eq $meta.website "bookmarks") }}
+{{ if or (eq $meta.website "posts") (eq $meta.website "echos") }}
   {{ $date := partial "functions/parsedate.html.html" .Page.File.Dir | unmarshal }} 
 
   {{ if $date.hasYear }}
-    {{ $datetime := dict "@type" "ListItem" "position" $position "name" (printf "%s年" $date.year) "item" (absURL (printf "/%s/%s/" $meta.website $date.year)) }}
+    {{ $datetime := dict "@type" "ListItem" "position" $position "name" (printf "%s年" $date.year) "item" (absURL (printf "/archives/#/%s/%s/" $meta.website $date.year)) }}
     {{ $position = add $position 1 }}
     {{ $breadcrumb = $breadcrumb | append $datetime }}
   {{ end }}
 
   {{ if $date.hasMonth }}
-    {{ $datetime := dict "@type" "ListItem" "position" $position "name" (printf "%s月" $date.month) "item" (absURL (printf "/%s/%s/%s/" $meta.website $date.year $date.month)) }}
+    {{ $datetime := dict "@type" "ListItem" "position" $position "name" (printf "%s月" $date.month) "item" (absURL (printf "/archives/#/%s/%s/%s/" $meta.website $date.year $date.month)) }}
     {{ $position = add $position 1 }}
     {{ $breadcrumb = $breadcrumb | append $datetime }}
   {{ end }}
 
-  {{ if $date.hasDay }}
-    {{ $datetime := dict "@type" "ListItem" "position" $position "name" (printf "%s日" $date.day) "item" (absURL (printf "/%s/%s/%s/%s/" $meta.website $date.year $date.month $date.day)) }}
-    {{ $position = add $position 1 }}
-    {{ $breadcrumb = $breadcrumb | append $datetime }}
-  {{ end }}
 {{ end }}
 
 {{ if .Page.IsPage }}
@@ -52,11 +47,11 @@
 
 {{ $types := dict "home" "WebSite" "search" "WebPage" "archives" "WebPage" "notfound" "WebPage" }}
 
-{{ if or (eq $meta.website "posts") (eq $meta.website "echos") (eq $meta.website "bookmarks") (eq $meta.website "note") }}
+{{ if or (eq $meta.website "posts") (eq $meta.website "echos") (eq $meta.website "note") }}
   {{ if not .Page.IsPage }}
-    {{ $types = merge (dict "posts" "Blog" "echos" "Blog" "notes" "WebSite" "bookmarks" "Collection") $types }}
+    {{ $types = merge (dict "posts" "Blog" "echos" "Blog" "notes" "WebSite" ) $types }}
   {{ else }}
-    {{ $types = merge (dict "posts" "BlogPosting" "echos" "BlogPosting" "notes" "Article" "bookmarks" "CollectionPage") $types }}
+    {{ $types = merge (dict "posts" "BlogPosting" "echos" "BlogPosting" "notes" "Article" ) $types }}
   {{ end }} 
 {{ else }}
   {{ if .Page.IsPage }}

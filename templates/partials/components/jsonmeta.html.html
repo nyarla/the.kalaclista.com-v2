@@ -35,27 +35,14 @@
     {{ end }}
   {{ else }}
     {{ $data = merge (dict "website" .Page.FirstSection.Section) $data }}
-
-    {{ if gt (len (findRE "\\d{4}" .Page.RelPermalink)) 0 }} 
-      {{ $data = merge (dict "title" (printf "%sの%s" (partial "functions/datelabel.html.html" .Page.File.Dir | unmarshal).label (index .Site.Params.labels $data.website))) $data }}
-      {{ $data = merge (dict "site" (printf "%s・%s" .Site.Title (index .Site.Params.title $data.website))) $data }}
-      {{ $data = merge (dict "description" (printf "%s一覧" $data.title)) $data }}
-      {{ $data = merge (dict "type" "website") $data }}
-    {{ else }}
-      {{ $data = merge (dict "title" (printf "%s・%s" .Site.Title (index .Site.Params.title $data.website))) $data }}
-      {{ $data = merge (dict "site" $data.title) $data }}
-      {{ $data = merge (dict "description" (replace (index .Site.Params.description $data.website) "<br>" "")) $data }}
-      {{ $data = merge (dict "type" "website") $data }}
-    {{ end }}
+    {{ $data = merge (dict "title" (printf "%s・%s" .Site.Title (index .Site.Params.title $data.website))) $data }}
+    {{ $data = merge (dict "site" $data.title) $data }}
+    {{ $data = merge (dict "description" (replace (index .Site.Params.description $data.website) "<br>" "")) $data }}
+    {{ $data = merge (dict "type" "website") $data }}
   {{ end }}
 {{ else }}
   {{ $data = merge (dict "website" .Site.Params.website) $data }}
-  {{ if and .Page.IsPage (ne $data.website "bookmarks") }}
-    {{ $data = merge (dict "title" .Page.Title) $data }}
-    {{ $data = merge (dict "site" .Site.Title) $data }}
-    {{ $data = merge (dict "description" (partial "functions/content.html.html" .Content | unmarshal).summary) $data }}
-    {{ $data = merge (dict "type" "article") $data }}
-  {{ else if and (eq .Page.Section "tags") (or (eq $data.website "posts") (eq $data.website "bookmarks")) }}
+  {{ if and (eq .Page.Section "tags") (or (eq $data.website "posts") (eq $data.website "bookmarks")) }}
     {{ $data = merge (dict "title" (printf (index .Site.Params.tag .Site.Params.website) .Data.Term)) $data}} 
     {{ $data = merge (dict "site" .Site.Title) $data }}
     {{ $data = merge (dict "description" $data.title) $data }}

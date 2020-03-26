@@ -22,7 +22,7 @@
     {{ $pages = $pages | append (partial "components/jsonpage.html.html" $src | unmarshal) }}
   {{ end }}
 {{ else }}
-  {{ range $section := slice "posts" "echos" "notes" "bookmarks" }}
+  {{ range $section := slice "posts" "echos" "notes" }}
     {{ $pages = $pages | append (index (index $.Site.Data $proto).feed $section).items }}
   {{ end }}
 {{ end }}
