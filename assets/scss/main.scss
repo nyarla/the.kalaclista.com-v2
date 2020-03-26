@@ -121,7 +121,7 @@ a.notes {
     height: 1px ;
   }
 
-  & ul {
+  & ul, & ol {
     margin: 0 calc(var(--Text-Base-Size) * 1.5) ;
     padding: 0 ;
 
