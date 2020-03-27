@@ -5,10 +5,10 @@
     "serve:local": "serve -l 1313 dist",
     "build:forestry": "make forestry",
     "build:local": "make preview",
-    "watch:forestry": "chokidar 'src/*/content/**/*.md' -c 'make forestry'",
-    "watch:local": "chokidar 'src/*/content/**/*.md' -c 'make preview'",
-    "forestry": "make clean config && npm-run-all -p watch:forestry serve:forestry",
-    "dev": "npm-run-all -p watch:local serve:local"
+    "watch:forestry": "chokidar '../*/content/**/*.md' -c 'make forestry'",
+    "watch:local": "chokidar 'src/*/content/**/*.md' -c 'make local'",
+    "forestry": "make clean config forestry && npm-run-all -p watch:forestry serve:forestry",
+    "dev": "make clean config local && npm-run-all -p watch:local serve:local"
   },
   "devDependencies": {
     "chokidar-cli": "^2.1.0",

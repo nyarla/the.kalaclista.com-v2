@@ -1,6 +1,8 @@
 .PHONY: clean config \
-	website http https preview build \
-	live up upload deploy
+	website https forestry local build \
+	dev preview \
+	up full \
+	push pull
 
 all: push
 	@echo done.
@@ -30,33 +32,29 @@ website:
 https:
 	env NODE_ENV=production ENABLE_MONETIZE=1 $(MAKE) website PROTO=https HOST=the.kalaclista.com
 
-preview: clean config
+local:
 	env NODE_ENV=development ENABLE_MONETIZE=0 $(MAKE) website PROTO=http HOST=localhost:1313
 
-forestry: config
+forestry:
 	env NODE_ENV=development ENABLE_MONETIZE=0 $(MAKE) website PROTO=https HOST=8ikfjp2kbmkigq.instant.forestry.io
-
-test: clean config preview live
 
 build: clean config
 	$(MAKE)	https
 
-live:
-	firebase serve --port 1313
+preview:
+	yarn run forestry
 
-up:
-	echo "." >.edit
-	tmux-up
+dev:
+	yarn run dev
 
-deploy:
+full: pull build
 	firebase deploy 
+
+up: pull build
+	firebase deploy --only=hosting
 
 pull:
 	cd src && git pull origin master && cd ../
 	git pull origin master
-
-update: pull build
-	firebase deploy --only=hosting
-
 
 push: pull build deploy
