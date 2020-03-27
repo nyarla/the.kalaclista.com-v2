@@ -1,4 +1,46 @@
 ---
 label: Echos
 hide_body: false
-fields: []
+fields:
+- name: title
+  type: text
+  config:
+    required: true
+  label: Title
+  description: Entry title
+- name: date
+  type: datetime
+  label: DateTime
+  description: Entry datetime
+  config:
+    required: true
+    date_format: YY-MM-DD
+    time_format: HH:mm:ss
+    display_utc: false
+    export_format: YYYY-MM-DDTHH:mm:ssZ
+  default: now
+- name: slug
+  type: datetime
+  description: Entry filename on Public URL
+  config:
+    required: true
+    date_format: 
+    time_format: HHmmss
+    display_utc: false
+    export_format: HHmmss
+  label: Slug
+  default: now
+- name: ads
+  type: boolean
+  label: Advertising
+  description: Enable advertising on entry
+  default: true
+- name: fixme
+  type: boolean
+  label: FIXME
+  description: FIXME flag on this entry
+  default: true
+- name: draft
+  type: boolean
+  label: Draft
+  description: This entry is draft at now
