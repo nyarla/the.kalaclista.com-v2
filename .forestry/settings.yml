@@ -3,7 +3,43 @@ new_page_extension: md
 auto_deploy: false
 admin_path: 
 webhook_url: 
-sections: 
+sections:
+- type: heading
+  label: Entries
+- type: directory
+  path: src/posts/content
+  label: Posts
+  create: all
+  match: "**/*.md"
+  new_doc_ext: ".md"
+  templates:
+  - posts
+- type: directory
+  path: src/echos/content
+  label: Echos
+  create: all
+  match: "**/*.md"
+  new_doc_ext: ".md"
+  templates:
+  - echos
+- type: directory
+  path: src/notes/content
+  label: Notes
+  create: all
+  match: "**/*.md"
+  new_doc_ext: ".md"
+  templates:
+  - notes
+- type: heading
+  label: Pages
+- type: directory
+  path: src/home/content
+  label: Pages
+  create: all
+  match: "**/*.md"
+  new_doc_ext: ".md"
+  templates:
+  - pages
 upload_dir: uploads
 public_path: "/uploads"
 front_matter_path: ''
