@@ -11,7 +11,7 @@ sections:
   label: Posts
   create: all
   match: "**/*.md"
-  new_doc_ext: ".md"
+  new_doc_ext: md
   templates:
   - posts
 - type: directory
@@ -19,7 +19,7 @@ sections:
   label: Echos
   create: all
   match: "**/*.md"
-  new_doc_ext: ".md"
+  new_doc_ext: md
   templates:
   - echos
 - type: directory
@@ -27,7 +27,7 @@ sections:
   label: Notes
   create: all
   match: "**/*.md"
-  new_doc_ext: ".md"
+  new_doc_ext: md
   templates:
   - notes
 - type: heading
@@ -37,7 +37,7 @@ sections:
   label: Pages
   create: all
   match: "**/*.md"
-  new_doc_ext: ".md"
+  new_doc_ext: md
   templates:
   - pages
 upload_dir: uploads
@@ -46,8 +46,11 @@ front_matter_path: ''
 use_front_matter_path: false
 file_template: ":filename:"
 build:
-  install_dependencies_command: npm install
-  preview_docker_image: node:10
+  preview_env:
+  - HUGO_VERSION=0.67.1
+  preview_output_directory: dist
+  install_dependencies_command: yarn add firebase-tools
+  preview_docker_image: forestryio/hugo:node10
   mount_path: "/srv"
   working_dir: "/srv"
-  instant_preview_command: npm run forestry:preview
+  instant_preview_command: env PATH=node_modules/.bin:$PATH make build
