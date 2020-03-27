@@ -51,7 +51,7 @@ full: pull build
 	firebase deploy 
 
 up: pull build
-	@firebase deploy --only=hosting "$$(test "$${FIREBASE_TOKEN:-}" = "" || echo "--token=$${FIREBASE_TOKEN}")"
+	@firebase "$$(test "$${FIREBASE_TOKEN:-}" = "" || echo "--token=$${FIREBASE_TOKEN}")" deploy --only=hosting
 
 pull:
 	cd src && git pull origin master && cd ../
