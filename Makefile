@@ -14,6 +14,7 @@ config:
 		| xargs -I{} -P5 bash -c 'cat config/global.yaml config/{}.yaml >src/{}/config.yaml'
 
 website:
+	test "$(shell basename `pwd`)" != ".preview" || for d in echos notes posts home; do cp -r ../$$d src; done
 	echo notes echos posts | tr ' ' "\n" \
 		| xargs -I{} -P4 \
 			bash -c 'cd src/{}; hugo --quiet -d ../../dist/{} -b "$(PROTO)://$(HOST)/{}" --minify'
