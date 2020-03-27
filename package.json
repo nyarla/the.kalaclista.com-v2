@@ -8,7 +8,8 @@
     "watch:forestry": "chokidar '../*/content/**/*.md' -c 'make forestry'",
     "watch:local": "chokidar 'src/*/content/**/*.md' -c 'make local'",
     "forestry": "make clean config forestry && npm-run-all -p watch:forestry serve:forestry",
-    "dev": "make clean config local && npm-run-all -p watch:local serve:local"
+    "dev": "make clean config local && npm-run-all -p watch:local serve:local",
+    "release": "make up"
   },
   "devDependencies": {
     "chokidar-cli": "^2.1.0",
