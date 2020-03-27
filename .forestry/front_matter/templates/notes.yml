@@ -1,4 +1,40 @@
 ---
 label: Notes
 hide_body: true
-fields: []
+fields:
+- name: title
+  type: text
+  config:
+    required: true
+  label: Title
+  description: Entry title
+- name: date
+  type: datetime
+  label: DateTime
+  config:
+    required: true
+    date_format: YY-MM-DD
+    time_format: HH:mm:ss
+    display_utc: false
+    export_format: YYYY-MM-DDTHH:mm:ss
+  description: Entry datetime
+  default: now
+- name: slug
+  type: text
+  config:
+    required: true
+  label: Slug
+  description: Entry slug on Public URL
+- name: ads
+  type: boolean
+  label: Advertising
+  description: Enable advertising on this entry
+  default: true
+- name: fixme
+  type: boolean
+  label: FIXME
+  description: FIXME flag on this entry
+- name: draft
+  type: boolean
+  label: Draft
+  description: This entry is draft at now
