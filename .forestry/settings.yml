@@ -48,6 +48,7 @@ file_template: ":filename:"
 build:
   preview_env:
   - HUGO_VERSION=0.67.1
+  - SHELL=/bin/sh
   preview_output_directory: dist
   install_dependencies_command: yarn install
   preview_docker_image: forestryio/hugo:node10
