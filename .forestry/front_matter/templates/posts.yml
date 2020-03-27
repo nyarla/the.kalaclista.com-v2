@@ -38,13 +38,13 @@ fields:
 - name: ads
   type: boolean
   label: Advertising
-  description: Enable Advertising on Entry
+  description: Enable advertising on entry
   default: true
 - name: fixme
   type: boolean
   label: FIXME
-  description: Fixme Flag of this entry
+  description: FIXME flag on this entry
 - name: draft
   type: boolean
   label: Draft
-  description: This entry is draft now
+  description: This entry is draft at now
