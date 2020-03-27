@@ -32,8 +32,8 @@ https:
 preview: clean config
 	env NODE_ENV=development ENABLE_MONETIZE=0 $(MAKE) website PROTO=http HOST=localhost:1313
 
-forestry: clean config
-	env NODE_ENV=development ENABLE_MONETIZE=0 $(MAKE) website PROTO=https HOST=a5n6kpr2nesbkw.instant.forestry.io
+forestry: config
+	env NODE_ENV=development ENABLE_MONETIZE=0 $(MAKE) website PROTO=https HOST=8ikfjp2kbmkigq.instant.forestry.io
 
 test: clean config preview live
 

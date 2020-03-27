@@ -7,7 +7,7 @@
     "build:local": "make preview",
     "watch:forestry": "chokidar 'src/*/content/**/*.md' -c 'make forestry'",
     "watch:local": "chokidar 'src/*/content/**/*.md' -c 'make preview'",
-    "forestry": "npm-run-all -p watch:forestry serve:forestry",
+    "forestry": "make clean config && npm-run-all -p watch:forestry serve:forestry",
     "dev": "npm-run-all -p watch:local serve:local"
   },
   "devDependencies": {
