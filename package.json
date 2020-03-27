@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "scripts": {
+    "serve:forestry": "serve -l 8080 dist",
+    "serve:local": "serve -l 1313 dist",
+    "build:forestry": "make forestry",
+    "build:local": "make preview",
+    "watch:forestry": "chokidar 'src/*/content/**/*.md' -c 'make forestry'",
+    "watch:local": "chokidar 'src/*/content/**/*.md' -c 'make preview'",
+    "forestry": "npm-run-all -p build:forestry watch:forestry serve:forestry",
+    "dev": "npm-run-all -p build:local watch:local serve:local"
+  },
+  "devDependencies": {
+    "chokidar-cli": "^2.1.0",
+    "firebase-tools": "^7.16.1",
+    "npm-run-all": "^4.1.5",
+    "serve": "^11.3.0"
+  }
+}

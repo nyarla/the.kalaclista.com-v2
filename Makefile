@@ -1,4 +1,4 @@
-.PHONY: clean config archives \
+.PHONY: clean config \
 	website http https preview build \
 	live up upload deploy
 
@@ -29,12 +29,15 @@ website:
 https:
 	env NODE_ENV=production ENABLE_MONETIZE=1 $(MAKE) website PROTO=https HOST=the.kalaclista.com
 
-preview: clean config archives
+preview: clean config
 	env NODE_ENV=development ENABLE_MONETIZE=0 $(MAKE) website PROTO=http HOST=localhost:1313
+
+forestry: clean config
+	env NODE_ENV=development ENABLE_MONETIZE=0 $(MAKE) website PROTO=https HOST=localhost:8080
 
 test: clean config preview live
 
-build: clean config archives
+build: clean config
 	$(MAKE)	https
 
 live:
