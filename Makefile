@@ -12,8 +12,8 @@ clean:
 	rm -rf src/home/data/*
 
 config:
-	ls src \
-		| xargs -I{} -P5 bash -c 'cat config/global.yaml config/{}.yaml >src/{}/config.yaml'
+	echo posts echos notes home | tr ' ' "\n"	\
+		| xargs -I{} -P5 bash -c 'test -d src/{} || mkdir -p src/{}; cat config/global.yaml config/{}.yaml >src/{}/config.yaml'
 
 website:
 	test "$(shell basename `pwd`)" != ".preview" || for d in echos notes posts home; do cp -r ../$$d src; done
