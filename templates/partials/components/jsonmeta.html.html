@@ -42,7 +42,12 @@
   {{ end }}
 {{ else }}
   {{ $data = merge (dict "website" .Site.Params.website) $data }}
-  {{ if and (eq .Page.Section "tags") (or (eq $data.website "posts") (eq $data.website "bookmarks")) }}
+  {{ if .Page.IsPage  }}
+    {{ $data = merge (dict "title" .Page.Title) $data }}
+    {{ $data = merge (dict "site" .Site.Title) $data }}
+    {{ $data = merge (dict "description" (partial "functions/content.html.html" .Content | unmarshal).summary) $data }}
+    {{ $data = merge (dict "type" "article") $data }}
+  {{ else if and (eq .Page.Section "tags") (eq $data.website "posts") }}
     {{ $data = merge (dict "title" (printf (index .Site.Params.tag .Site.Params.website) .Data.Term)) $data}} 
     {{ $data = merge (dict "site" .Site.Title) $data }}
     {{ $data = merge (dict "description" $data.title) $data }}
