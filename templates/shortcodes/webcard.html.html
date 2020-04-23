@@ -1,10 +1,10 @@
 {{ $args := unmarshal .Inner }}
 {{ $title := $args.title }}
 {{ $description := $args.description }}
-{{ $permalink := $args.permalink }}
+{{ $permalink := urls.Parse $args.permalink }}
 
 <figure class="webcard">
-  <a href="{{ $permalink }}">
+  <a href="{{ $permalink.String }}">
     <h1>{{ $title }}</h1>
     <blockquote>
       {{ if (ge (strings.RuneCount $description) 70) }}
@@ -13,6 +13,6 @@
       <p>{{ $description }}</p>
       {{ end }}
     </blockquote>
-    <p><cite>{{ $permalink }}</cite></p>
+    <p><cite>{{ replace $permalink.String $permalink.EscapedPath $permalink.Path }}</cite></p>
   </a>
 </figure>
