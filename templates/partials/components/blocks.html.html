@@ -163,13 +163,7 @@
                 {{ $displayed = true }}
               {{ end }}
               <h2 id="{{ printf "/%s/%04d/%02d/" $section $year $month }}">
-                {{ if ne $section "notes" }}
-                <a href="{{ absURL (printf "/%s/%04d/%02d/" $section $year $month) }}">
-                  {{ index $.labels $section }}
-                </a>
-                {{ else }}
-                  {{ index $data.labels $section }}
-                {{ end }}
+                {{ index $data.labels $section }}
               </h2>
 
               <ul>
